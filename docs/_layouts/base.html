@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      {% if page.title and page.title != "Home" %}{{ page.title }} ·
+      {% endif %}{{ site.title }}
+    </title>
+    <meta
+      name="description"
+      content="{{ page.description | default: site.description }}"
+    />
+    <meta name="author" content="Gautam Kolan" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}" />
+  </head>
+  <body>
+    <header class="nav">
+      <div class="nav-inner">
+        <a class="brand" href="{{ '/' | relative_url }}">
+          <span class="name">Record Health Check</span>
+        </a>
+        <nav class="nav-links">
+          <a href="{{ '/installation/getting-started.html' | relative_url }}"
+            >Get started</a
+          >
+          <a href="{{ '/guides/configuration-guide.html' | relative_url }}"
+            >Guides</a
+          >
+          <a href="{{ '/examples/' | relative_url }}">Examples</a>
+          <a href="{{ '/spec/' | relative_url }}">Spec</a>
+          <a
+            class="btn btn-primary"
+            href="https://github.com/gkolan/recordHealthCheck"
+            >GitHub</a
+          >
+        </nav>
+      </div>
+    </header>
+
+    {{ content }}
+
+    <footer class="site">
+      <div class="wrap">
+        <div>
+          Record Health Check — created and maintained by
+          <a href="https://github.com/gkolan">Gautam Kolan</a>
+        </div>
+        <div class="links">
+          <a href="https://github.com/gkolan/recordHealthCheck">GitHub</a>
+          <a href="{{ '/installation/getting-started.html' | relative_url }}"
+            >Get started</a
+          >
+          <a href="https://github.com/gkolan/recordHealthCheck/blob/main/LICENSE"
+            >Apache 2.0</a
+          >
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

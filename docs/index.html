@@ -1,0 +1,279 @@
+---
+layout: home
+title: Home
+description: Metadata-driven, advisory record health checks for Salesforce — run data-quality checks on any record page.
+---
+
+<!-- ── Hero ──────────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Open source · Salesforce DX · Apache 2.0</span>
+    <h1>Data-quality checks, right on the record page</h1>
+    <p class="lede">
+      Record Health Check is a metadata-driven framework for running
+      <strong>data-quality checks</strong> against a Salesforce record, right on
+      its record page. It is <strong>advisory</strong> and read-only, so it never
+      blocks a save and never writes a field.
+    </p>
+    <div class="cta-row">
+      <a
+        class="btn btn-primary btn-lg"
+        href="https://githubsfdeploy.herokuapp.com/?owner=gkolan&repo=recordHealthCheck&ref=main"
+        >Deploy to Salesforce</a
+      >
+      <a class="btn btn-ghost btn-lg" href="#install">Install in your org</a>
+    </div>
+    <div class="badge-row">
+      <span class="ghbadge"><span class="k">license</span><span class="v ok">Apache-2.0</span></span>
+      <span class="ghbadge"><span class="k">Salesforce API</span><span class="v">66.0</span></span>
+      <span class="ghbadge"><span class="k">sample sets</span><span class="v">10 · 88 rules</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ── Install (kept near the top, as requested) ─────────────────────────── -->
+<section class="band alt" id="install">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Install</div>
+      <h2>Up and running in minutes</h2>
+      <p>
+        The fastest path is the <strong>Deploy to Salesforce</strong> button —
+        click it, log in to a sandbox, and click Deploy. No command line, no
+        downloads. Prefer the CLI? Deploy the source directly.
+      </p>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="ttl">deploy with the Salesforce CLI</span>
+      </div>
+      <pre><span class="pr">$</span> <span class="cm">git clone</span> https://github.com/gkolan/recordHealthCheck.git
+<span class="pr">$</span> <span class="cm">cd</span> recordHealthCheck
+<span class="pr">$</span> <span class="cm">sf project deploy start</span> <span class="fl">--source-dir</span> force-app
+<span class="pr">$</span> <span class="cm">sf org assign permset</span> <span class="fl">--name</span> Record_Health_Check_User</pre>
+    </div>
+
+    <div class="steps">
+      <div class="steps-head">Then add the card to a record page</div>
+      <div class="step">
+        <div class="si">1</div>
+        <div class="sc">
+          On a Lightning <b>record page</b>, drag on the
+          <b>recordHealthCheck</b> component.
+        </div>
+      </div>
+      <div class="step">
+        <div class="si">2</div>
+        <div class="sc">
+          Set its <b>Check Set Developer Name</b> to a Check Set's Developer
+          Name, for example <code>Account_Data_Quality</code>. It must match
+          exactly — a mismatch is the single most common misconfiguration.
+        </div>
+      </div>
+      <div class="step">
+        <div class="si">3</div>
+        <div class="sc">
+          Save and activate, then open a record to see the card evaluate it.
+        </div>
+      </div>
+    </div>
+
+    <p class="center" style="margin-top: 26px">
+      <a class="btn btn-primary" href="{{ '/installation/getting-started.html' | relative_url }}">Read the full Getting Started guide</a>
+    </p>
+  </div>
+</section>
+
+<!-- ── Screenshot placeholder (real screenshot dropped in later) ─────────── -->
+<section class="band">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">See it in one screen</div>
+      <h2>An advisory panel on the record</h2>
+      <p>
+        The component loads the active Rules for a Check Set, evaluates the open
+        record, and shows each result as pass, fail, skipped, or error.
+      </p>
+    </div>
+    <div class="shot">
+      <div class="shot-frame">
+        <div class="shot-bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="url">lightning.force.com / Account / record</span>
+        </div>
+        <div class="shot-placeholder">
+          <div class="ico">📸</div>
+          <div class="t">Screenshot coming soon</div>
+          <div class="s">
+            A live capture of the Record Health Check card on an Account record
+            page will go here.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── What it does ──────────────────────────────────────────────────────── -->
+<section class="band alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">What it does</div>
+      <h2>Four ways to check a record</h2>
+      <p>
+        Validation rules enforce at save time, one record and one field at a
+        time. Record Health Check complements them by running at read time — so
+        it can evaluate across related records, compare aggregates, and surface
+        data that predates your rules.
+      </p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="lbl">Formula checks</div>
+        <div class="sub">
+          Evaluate a formula over fields on the current record (requires org API
+          v63.0+).
+        </div>
+      </div>
+      <div class="feat">
+        <div class="lbl">Query checks</div>
+        <div class="sub">
+          Run a SOQL query and compare the result to a value or a list.
+        </div>
+      </div>
+      <div class="feat">
+        <div class="lbl">Compare two queries</div>
+        <div class="sub">
+          Run two queries and compare their results to each other.
+        </div>
+      </div>
+      <div class="feat">
+        <div class="lbl">Apex checks</div>
+        <div class="sub">
+          Call a custom Apex class for logic beyond formulas and SOQL.
+        </div>
+      </div>
+      <div class="feat">
+        <div class="lbl">Applicability &amp; dependencies</div>
+        <div class="sub">
+          Decide per record whether a Rule runs, and let one Rule wait for
+          another to pass first.
+        </div>
+      </div>
+      <div class="feat">
+        <div class="lbl">Automatic or on-demand</div>
+        <div class="sub">
+          Evaluate the record on page load, or when you click Run.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Example use cases ─────────────────────────────────────────────────── -->
+<section class="band">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Example use cases</div>
+      <h2>From a single formula to custom Apex</h2>
+      <p>
+        The repo ships 10 sample Check Sets and 88 Rules for Account. Each links
+        to a full walkthrough.
+      </p>
+    </div>
+    <div class="teaser-grid">
+      <a class="teaser" href="{{ '/examples/formula/02-either-or-field.html' | relative_url }}">
+        <div class="tt"><span class="ref">Record formula</span></div>
+        <h4>Phone or Website required</h4>
+        <p>At least one of Phone or Website must be populated; both blank fails.</p>
+      </a>
+      <a class="teaser" href="{{ '/examples/query/01-child-count-minimum-one.html' | relative_url }}">
+        <div class="tt"><span class="ref">Single query</span></div>
+        <h4>At least one Contact</h4>
+        <p>The Account must have one or more related Contacts (COUNT vs a threshold).</p>
+      </a>
+      <a class="teaser" href="{{ '/examples/compare-two-queries/01-aggregate-counts.html' | relative_url }}">
+        <div class="tt"><span class="ref">Compare two queries</span></div>
+        <h4>Contacts vs open Opportunities</h4>
+        <p>Contact count must not exceed the count of open Opportunities on the Account.</p>
+      </a>
+      <a class="teaser" href="{{ '/examples/apex/03-strategic-readiness.html' | relative_url }}">
+        <div class="tt"><span class="ref">Custom Apex</span></div>
+        <h4>Strategic account readiness</h4>
+        <p>Strategic Accounts get one weighted readiness score versus a minimum.</p>
+      </a>
+    </div>
+    <div class="morelink">
+      <a href="{{ '/examples/' | relative_url }}">Browse the full examples catalog →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Documentation ─────────────────────────────────────────────────────── -->
+<section class="band alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Documentation</div>
+      <h2>Everything, by topic</h2>
+    </div>
+    <div class="docs-grid">
+      <a class="doc-card" href="{{ '/installation/getting-started.html' | relative_url }}">
+        <div class="dt">Getting Started</div>
+        <div class="dd">Deploy the package and create your first Rule.</div>
+      </a>
+      <a class="doc-card" href="{{ '/installation/sandbox.html' | relative_url }}">
+        <div class="dt">Install in a sandbox</div>
+        <div class="dd">Click-by-click walkthrough using the Deploy button.</div>
+      </a>
+      <a class="doc-card" href="{{ '/guides/configuration-guide.html' | relative_url }}">
+        <div class="dt">Configuration Guide</div>
+        <div class="dd">Every Check Set and Rule field, picklist, and evaluator.</div>
+      </a>
+      <a class="doc-card" href="{{ '/metadata/' | relative_url }}">
+        <div class="dt">Metadata reference</div>
+        <div class="dd">Custom Metadata types, Check Set and Rule fields.</div>
+      </a>
+      <a class="doc-card" href="{{ '/examples/' | relative_url }}">
+        <div class="dt">Examples catalog</div>
+        <div class="dd">Copy-paste patterns for every check type.</div>
+      </a>
+      <a class="doc-card" href="{{ '/guides/llm-configuration.html' | relative_url }}">
+        <div class="dt">Configure with AI</div>
+        <div class="dd">Paste the system prompt into ChatGPT, Gemini, or Cursor.</div>
+      </a>
+      <a class="doc-card" href="{{ '/apex/plugin-reference.html' | relative_url }}">
+        <div class="dt">Apex plugin reference</div>
+        <div class="dd">Call the engine and write custom Apex checks.</div>
+      </a>
+      <a class="doc-card" href="{{ '/guides/debug-mode.html' | relative_url }}">
+        <div class="dt">Debug Mode</div>
+        <div class="dd">Optional troubleshooting detail on the card and console.</div>
+      </a>
+      <a class="doc-card" href="{{ '/spec/' | relative_url }}">
+        <div class="dt">Design Specification</div>
+        <div class="dd">The formal contract, split by topic.</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer CTA ────────────────────────────────────────────────────────── -->
+<section class="band dark">
+  <div class="wrap footer-cta">
+    <h2>Add it to a record page today</h2>
+    <p>
+      Deploy to a sandbox, drag the component onto a Lightning record page, and
+      point it at a sample Check Set.
+    </p>
+    <div class="cta-row" style="margin-top: 26px">
+      <a
+        class="btn btn-primary btn-lg"
+        href="https://githubsfdeploy.herokuapp.com/?owner=gkolan&repo=recordHealthCheck&ref=main"
+        >Deploy to Salesforce</a
+      >
+      <a class="btn btn-ghost btn-lg" href="{{ '/installation/getting-started.html' | relative_url }}" style="color: #e9eef4; border-color: rgba(255,255,255,0.25)">Getting Started</a>
+    </div>
+  </div>
+</section>
