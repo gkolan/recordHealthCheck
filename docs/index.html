@@ -4,29 +4,73 @@ title: Home
 description: Metadata-driven, advisory record health checks for Salesforce — run data-quality checks on any record page.
 ---
 
-<!-- ── Hero ──────────────────────────────────────────────────────────────── -->
-<section class="hero">
+<!-- ── Hero (two-column, left-aligned) ───────────────────────────────────── -->
+<section class="hero lead">
   <div class="wrap">
-    <span class="eyebrow">Open source · Salesforce DX · Apache 2.0</span>
-    <h1>Data-quality checks, right on the record page</h1>
-    <p class="lede">
-      Record Health Check is a metadata-driven framework for running
-      <strong>data-quality checks</strong> against a Salesforce record, right on
-      its record page. It is <strong>advisory</strong> and read-only, so it never
-      blocks a save and never writes a field.
-    </p>
-    <div class="cta-row">
-      <a
-        class="btn btn-primary btn-lg"
-        href="https://githubsfdeploy.herokuapp.com/?owner=gkolan&repo=recordHealthCheck&ref=main"
-        >Deploy to Salesforce</a
-      >
-      <a class="btn btn-ghost btn-lg" href="#install">Install in your org</a>
-    </div>
-    <div class="badge-row">
-      <span class="ghbadge"><span class="k">license</span><span class="v ok">Apache-2.0</span></span>
-      <span class="ghbadge"><span class="k">Salesforce API</span><span class="v">66.0</span></span>
-      <span class="ghbadge"><span class="k">sample sets</span><span class="v">10 · 88 rules</span></span>
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow-text">Open source · Salesforce DX · Apache 2.0</span>
+        <h1>Data-quality checks, right on the record page</h1>
+        <p class="lede">
+          A metadata-driven framework that runs
+          <strong>data-quality checks</strong> on a Salesforce record from its
+          own page. It is <strong>advisory</strong> and read-only — it never
+          blocks a save and never writes a field.
+        </p>
+        <div class="cta-row">
+          <a
+            class="btn btn-primary btn-lg"
+            href="https://githubsfdeploy.herokuapp.com/?owner=gkolan&repo=recordHealthCheck&ref=main"
+            >Deploy to Salesforce</a
+          >
+          <a class="btn btn-ghost btn-lg" href="#install">Install in your org</a>
+        </div>
+        <div class="badge-row">
+          <span class="ghbadge"><span class="k">license</span><span class="v ok">Apache-2.0</span></span>
+          <span class="ghbadge"><span class="k">Salesforce API</span><span class="v">66.0</span></span>
+          <span class="ghbadge"><span class="k">sample sets</span><span class="v">10 · 88 rules</span></span>
+        </div>
+      </div>
+
+      <div class="hero-preview">
+        <div class="rhc-card">
+          <div class="rhc-head">
+            <div class="ti">Account health</div>
+            <div class="summary">5 checks · 2 need attention</div>
+          </div>
+          <div class="rhc-rows">
+            <div class="rhc-row">
+              <span class="ic err">✕</span>
+              <span class="txt"
+                ><b>No Contact on file</b>
+                <span class="why">— add at least one related Contact</span></span
+              >
+            </div>
+            <div class="rhc-row">
+              <span class="ic warn">!</span>
+              <span class="txt"
+                ><b>Billing Country missing</b>
+                <span class="why">— required for Partner accounts</span></span
+              >
+            </div>
+            <div class="rhc-row">
+              <span class="ic pass">✓</span>
+              <span class="txt"><b>Phone or Website present</b></span>
+              <span class="pass-lbl">Pass</span>
+            </div>
+            <div class="rhc-row">
+              <span class="ic pass">✓</span>
+              <span class="txt"><b>Open Opportunity over $50k</b></span>
+              <span class="pass-lbl">Pass</span>
+            </div>
+            <div class="rhc-row">
+              <span class="ic pass">✓</span>
+              <span class="txt"><b>Activity in the last 90 days</b></span>
+              <span class="pass-lbl">Pass</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -38,11 +82,29 @@ description: Metadata-driven, advisory record health checks for Salesforce — r
       <div class="kicker">Install</div>
       <h2>Up and running in minutes</h2>
       <p>
-        The fastest path is the <strong>Deploy to Salesforce</strong> button —
-        click it, log in to a sandbox, and click Deploy. No command line, no
-        downloads. Prefer the CLI? Deploy the source directly.
+        The component is read-only, so deploying never changes your data. Pick
+        the path that suits you.
       </p>
     </div>
+
+    <div class="install-lead center">
+      <a
+        class="btn btn-primary btn-lg"
+        href="https://githubsfdeploy.herokuapp.com/?owner=gkolan&repo=recordHealthCheck&ref=main"
+        >Deploy to Salesforce</a
+      >
+      <p class="install-note">
+        <strong>No command line:</strong> click the button, log in to a
+        <strong>sandbox</strong>, and click <strong>Deploy</strong>. Then, in
+        Setup, assign the <code>Record_Health_Check_User</code> permission set. A
+        click-by-click walkthrough is in
+        <a href="{{ '/installation/sandbox.html' | relative_url }}"
+          >Install in your sandbox</a
+        >.
+      </p>
+    </div>
+
+    <p class="install-or">Prefer the Salesforce CLI?</p>
 
     <div class="terminal">
       <div class="terminal-bar">
@@ -86,32 +148,41 @@ description: Metadata-driven, advisory record health checks for Salesforce — r
   </div>
 </section>
 
-<!-- ── Screenshot placeholder (real screenshot dropped in later) ─────────── -->
+<!-- ── Example use cases (high priority — users want these first) ────────── -->
 <section class="band">
   <div class="wrap">
     <div class="sec-head">
-      <div class="kicker">See it in one screen</div>
-      <h2>An advisory panel on the record</h2>
+      <div class="kicker">Example use cases</div>
+      <h2>From a single formula to custom Apex</h2>
       <p>
-        The component loads the active Rules for a Check Set, evaluates the open
-        record, and shows each result as pass, fail, skipped, or error.
+        The repo ships 10 sample Check Sets and 88 Rules for Account. Each links
+        to a full, copy-paste walkthrough.
       </p>
     </div>
-    <div class="shot">
-      <div class="shot-frame">
-        <div class="shot-bar">
-          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-          <span class="url">lightning.force.com / Account / record</span>
-        </div>
-        <div class="shot-placeholder">
-          <div class="ico">📸</div>
-          <div class="t">Screenshot coming soon</div>
-          <div class="s">
-            A live capture of the Record Health Check card on an Account record
-            page will go here.
-          </div>
-        </div>
-      </div>
+    <div class="teaser-grid">
+      <a class="teaser" href="{{ '/examples/formula/02-either-or-field.html' | relative_url }}">
+        <div class="tt"><span class="ref">Record formula</span></div>
+        <h4>Phone or Website required</h4>
+        <p>At least one of Phone or Website must be populated; both blank fails.</p>
+      </a>
+      <a class="teaser" href="{{ '/examples/query/01-child-count-minimum-one.html' | relative_url }}">
+        <div class="tt"><span class="ref">Single query</span></div>
+        <h4>At least one Contact</h4>
+        <p>The Account must have one or more related Contacts (COUNT vs a threshold).</p>
+      </a>
+      <a class="teaser" href="{{ '/examples/compare-two-queries/01-aggregate-counts.html' | relative_url }}">
+        <div class="tt"><span class="ref">Compare two queries</span></div>
+        <h4>Contacts vs open Opportunities</h4>
+        <p>Contact count must not exceed the count of open Opportunities on the Account.</p>
+      </a>
+      <a class="teaser" href="{{ '/examples/apex/03-strategic-readiness.html' | relative_url }}">
+        <div class="tt"><span class="ref">Custom Apex</span></div>
+        <h4>Strategic account readiness</h4>
+        <p>Strategic Accounts get one weighted readiness score versus a minimum.</p>
+      </a>
+    </div>
+    <div class="morelink">
+      <a href="{{ '/examples/' | relative_url }}">Browse the full examples catalog →</a>
     </div>
   </div>
 </section>
@@ -172,47 +243,8 @@ description: Metadata-driven, advisory record health checks for Salesforce — r
   </div>
 </section>
 
-<!-- ── Example use cases ─────────────────────────────────────────────────── -->
-<section class="band">
-  <div class="wrap">
-    <div class="sec-head">
-      <div class="kicker">Example use cases</div>
-      <h2>From a single formula to custom Apex</h2>
-      <p>
-        The repo ships 10 sample Check Sets and 88 Rules for Account. Each links
-        to a full walkthrough.
-      </p>
-    </div>
-    <div class="teaser-grid">
-      <a class="teaser" href="{{ '/examples/formula/02-either-or-field.html' | relative_url }}">
-        <div class="tt"><span class="ref">Record formula</span></div>
-        <h4>Phone or Website required</h4>
-        <p>At least one of Phone or Website must be populated; both blank fails.</p>
-      </a>
-      <a class="teaser" href="{{ '/examples/query/01-child-count-minimum-one.html' | relative_url }}">
-        <div class="tt"><span class="ref">Single query</span></div>
-        <h4>At least one Contact</h4>
-        <p>The Account must have one or more related Contacts (COUNT vs a threshold).</p>
-      </a>
-      <a class="teaser" href="{{ '/examples/compare-two-queries/01-aggregate-counts.html' | relative_url }}">
-        <div class="tt"><span class="ref">Compare two queries</span></div>
-        <h4>Contacts vs open Opportunities</h4>
-        <p>Contact count must not exceed the count of open Opportunities on the Account.</p>
-      </a>
-      <a class="teaser" href="{{ '/examples/apex/03-strategic-readiness.html' | relative_url }}">
-        <div class="tt"><span class="ref">Custom Apex</span></div>
-        <h4>Strategic account readiness</h4>
-        <p>Strategic Accounts get one weighted readiness score versus a minimum.</p>
-      </a>
-    </div>
-    <div class="morelink">
-      <a href="{{ '/examples/' | relative_url }}">Browse the full examples catalog →</a>
-    </div>
-  </div>
-</section>
-
 <!-- ── Documentation ─────────────────────────────────────────────────────── -->
-<section class="band alt">
+<section class="band">
   <div class="wrap">
     <div class="sec-head">
       <div class="kicker">Documentation</div>
