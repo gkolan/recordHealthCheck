@@ -1,0 +1,18 @@
+# GitHub Pages (Jekyll) configuration for the Record Health Check docs site.
+# Served from the /docs folder on the main branch.
+# The default GitHub Pages plugins jekyll-optional-front-matter and
+# jekyll-relative-links render the front-matter-less .md files and rewrite
+# relative `.md` links to their published page URLs, so existing docs links work.
+title: Record Health Check
+description: Metadata-driven, advisory record health checks for Salesforce
+theme: jekyll-theme-cayman
+url: https://gkolan.github.io
+baseurl: /recordHealthCheck
+show_downloads: false
+
+# Keep maintainer-only and non-doc folders out of the published site.
+exclude:
+  - _templates/
+  - interactive/
+  - audits/
+  - enhancements/
