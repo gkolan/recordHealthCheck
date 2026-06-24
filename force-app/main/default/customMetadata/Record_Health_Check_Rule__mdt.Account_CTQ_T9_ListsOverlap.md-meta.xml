@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+  xmlns="http://soap.sforce.com/2006/04/metadata"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>CTQ - Contact Cities Overlap</label>
+    <protected>false</protected>
+    <values>
+        <field>Record_Health_Check_Set__c</field>
+        <value xsi:type="xsd:string">Account_Compare_Queries</value>
+    </values>
+    <values>
+        <field>CheckName__c</field>
+        <value
+      xsi:type="xsd:string"
+    >Contact Cities Overlap With Parent Account Contacts</value>
+    </values>
+    <values>
+        <field>Tooltip__c</field>
+        <value
+      xsi:type="xsd:string"
+    >ListsOverlap: at least one contact mailing city on this account must appear in the set of contact mailing cities on the parent account. SOQL applicability gate skips the check when no parent account is set.</value>
+    </values>
+    <values>
+        <field>CheckMethod__c</field>
+        <value xsi:type="xsd:string">CompareTwoQueries</value>
+    </values>
+    <values>
+        <field>DataQuery__c</field>
+        <value
+      xsi:type="xsd:string"
+    >SELECT MailingCity FROM Contact WHERE AccountId = {!Id} AND MailingCity != null</value>
+    </values>
+    <values>
+        <field>FieldToRead__c</field>
+        <value xsi:type="xsd:string">MailingCity</value>
+    </values>
+    <values>
+        <field>CompareToQuery__c</field>
+        <value
+      xsi:type="xsd:string"
+    >SELECT MailingCity FROM Contact WHERE AccountId = {!ParentId} AND MailingCity != null</value>
+    </values>
+    <values>
+        <field>CompareToField__c</field>
+        <value xsi:type="xsd:string">MailingCity</value>
+    </values>
+    <values>
+        <field>WhenMultipleRows__c</field>
+        <value xsi:type="xsd:string">CompareAsLists</value>
+    </values>
+    <values>
+        <field>Operator__c</field>
+        <value xsi:type="xsd:string">ListsOverlap</value>
+    </values>
+    <values>
+        <field>WhenZeroRows__c</field>
+        <value xsi:type="xsd:string">Skip</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">Warning</value>
+    </values>
+    <values>
+        <field>MessageWhenFailed__c</field>
+        <value
+      xsi:type="xsd:string"
+    >{!Name} has no contact cities in common with its parent account. Verify geographic alignment.</value>
+    </values>
+    <values>
+        <field>MessageWhenCannotRun__c</field>
+        <value
+      xsi:type="xsd:string"
+    >Could not compare contact city lists. Contact your administrator.</value>
+    </values>
+    <values>
+        <field>RunThisCheckWhen__c</field>
+        <value xsi:type="xsd:string">SOQL</value>
+    </values>
+    <values>
+        <field>RunWhenCountQuery__c</field>
+        <value
+      xsi:type="xsd:string"
+    >SELECT COUNT() FROM Account WHERE Id = {!ParentId}</value>
+    </values>
+    <values>
+        <field>CountOperator__c</field>
+        <value xsi:type="xsd:string">GreaterThan</value>
+    </values>
+    <values>
+        <field>CountThreshold__c</field>
+        <value xsi:type="xsd:double">0</value>
+    </values>
+    <values>
+        <field>RunOrder__c</field>
+        <value xsi:type="xsd:double">30</value>
+    </values>
+    <values>
+        <field>IsActive__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

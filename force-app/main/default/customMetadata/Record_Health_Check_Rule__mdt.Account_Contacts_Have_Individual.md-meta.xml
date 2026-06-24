@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+  xmlns="http://soap.sforce.com/2006/04/metadata"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>Comp - Contacts Have Individual</label>
+    <protected>false</protected>
+    <values>
+        <field>Record_Health_Check_Set__c</field>
+        <value xsi:type="xsd:string">Account_Compliance_Audit</value>
+    </values>
+    <values>
+        <field>CheckName__c</field>
+        <value
+      xsi:type="xsd:string"
+    >All Contacts Have a Linked Individual (Consent)</value>
+    </values>
+    <values>
+        <field>Tooltip__c</field>
+        <value
+      xsi:type="xsd:string"
+    >GDPR data-subject coverage: every Contact must link to an Individual record for consent tracking. Requires Individual object enabled.</value>
+    </values>
+    <values>
+        <field>CheckMethod__c</field>
+        <value xsi:type="xsd:string">Query</value>
+    </values>
+    <values>
+        <field>DataQuery__c</field>
+        <value
+      xsi:type="xsd:string"
+    >SELECT IndividualId FROM Contact WHERE AccountId = {!Id}</value>
+    </values>
+    <values>
+        <field>FieldToRead__c</field>
+        <value xsi:type="xsd:string">IndividualId</value>
+    </values>
+    <values>
+        <field>WhenMultipleRows__c</field>
+        <value xsi:type="xsd:string">AllRowsPass</value>
+    </values>
+    <values>
+        <field>Operator__c</field>
+        <value xsi:type="xsd:string">IsNotBlank</value>
+    </values>
+    <values>
+        <field>WhenZeroRows__c</field>
+        <value xsi:type="xsd:string">Pass</value>
+    </values>
+    <values>
+        <field>WhenValueIsEmpty__c</field>
+        <value xsi:type="xsd:string">MissingMeansNoMatch</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">Warning</value>
+    </values>
+    <values>
+        <field>MessageWhenFailed__c</field>
+        <value
+      xsi:type="xsd:string"
+    >{!Name} has one or more contacts with no linked Individual record. Consent and data-subject requests cannot be tracked for them.</value>
+    </values>
+    <values>
+        <field>MessageWhenCannotRun__c</field>
+        <value
+      xsi:type="xsd:string"
+    >Could not verify Individual links on contacts. Contact your administrator.</value>
+    </values>
+    <values>
+        <field>RunThisCheckWhen__c</field>
+        <value xsi:type="xsd:string">Always</value>
+    </values>
+    <values>
+        <field>RunOrder__c</field>
+        <value xsi:type="xsd:double">20</value>
+    </values>
+    <values>
+        <field>IsActive__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

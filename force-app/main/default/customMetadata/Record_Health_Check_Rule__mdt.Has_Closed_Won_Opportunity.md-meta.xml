@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+  xmlns="http://soap.sforce.com/2006/04/metadata"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>Ex - Has At Least One Closed Won Oppo...</label>
+    <protected>false</protected>
+    <values>
+        <field>Record_Health_Check_Set__c</field>
+        <value xsi:type="xsd:string">Account_Examples_Query</value>
+    </values>
+    <values>
+        <field>RunOrder__c</field>
+        <value xsi:type="xsd:double">30</value>
+    </values>
+    <values>
+        <field>IsActive__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>CheckName__c</field>
+        <value
+      xsi:type="xsd:string"
+    >Has At Least One Closed Won Opportunity</value>
+    </values>
+    <values>
+        <field>CheckMethod__c</field>
+        <value xsi:type="xsd:string">Query</value>
+    </values>
+    <values>
+        <field>DataQuery__c</field>
+        <value
+      xsi:type="xsd:string"
+    >SELECT Amount FROM Opportunity WHERE AccountId = {!Id} AND StageName = &apos;Closed Won&apos;</value>
+    </values>
+    <values>
+        <field>WhenMultipleRows__c</field>
+        <value xsi:type="xsd:string">AnyRowPasses</value>
+    </values>
+    <values>
+        <field>Operator__c</field>
+        <value xsi:type="xsd:string">IsNotBlank</value>
+    </values>
+    <values>
+        <field>WhenZeroRows__c</field>
+        <value xsi:type="xsd:string">Fail</value>
+    </values>
+    <values>
+        <field>RunThisCheckWhen__c</field>
+        <value xsi:type="xsd:string">Always</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">Warning</value>
+    </values>
+    <values>
+        <field>MessageWhenFailed__c</field>
+        <value
+      xsi:type="xsd:string"
+    >This account has no Closed Won opportunities.</value>
+    </values>
+    <values>
+        <field>FieldToRead__c</field>
+        <value xsi:type="xsd:string">Amount</value>
+    </values>
+</CustomMetadata>

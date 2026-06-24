@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RunWhenFormula__c</fullName>
+    <label>Run When Formula Is True</label>
+    <description
+  >A Salesforce formula returning true or false. True means this check applies and runs; false means it is Skipped. Required when "Run This Check When" is "Only when a formula is true".</description>
+    <type>LongTextArea</type>
+    <length>32768</length>
+    <visibleLines>5</visibleLines>
+        <inlineHelpText
+  >Salesforce formula returning true/false, e.g. ISPICKVAL(Type, "Partner"). True = run the check. False = Skipped.</inlineHelpText>
+    <required>false</required>
+</CustomField>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ApexClass__c</fullName>
+    <label>Apex Class</label>
+    <description
+  >The API name of the Apex class to run for this check. Required when Check Method is Custom Apex. The class must implement the RecordHealthCheckRule interface.</description>
+    <type>Text</type>
+    <length>255</length>
+        <inlineHelpText
+  >The Apex class name to run, e.g. AccountApprovalHealthCheck. It must implement RecordHealthCheckRule. Required for Custom Apex checks.</inlineHelpText>
+    <required>false</required>
+    <unique>false</unique>
+    <externalId>false</externalId>
+</CustomField>

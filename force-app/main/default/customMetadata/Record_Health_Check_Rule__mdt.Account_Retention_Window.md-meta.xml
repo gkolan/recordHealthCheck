@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+  xmlns="http://soap.sforce.com/2006/04/metadata"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>Comp - Retention Window</label>
+    <protected>false</protected>
+    <values>
+        <field>Record_Health_Check_Set__c</field>
+        <value xsi:type="xsd:string">Account_Compliance_Audit</value>
+    </values>
+    <values>
+        <field>CheckName__c</field>
+        <value xsi:type="xsd:string">Within Data-Retention Window</value>
+    </values>
+    <values>
+        <field>Tooltip__c</field>
+        <value
+      xsi:type="xsd:string"
+    >GDPR storage limitation: flags accounts with no activity in 730 days. Time-based drift — only a read-time check catches it.</value>
+    </values>
+    <values>
+        <field>CheckMethod__c</field>
+        <value xsi:type="xsd:string">Formula</value>
+    </values>
+    <values>
+        <field>PassFailFormula__c</field>
+        <value
+      xsi:type="xsd:string"
+    >(TODAY() - LastActivityDate) &lt; 730</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">Warning</value>
+    </values>
+    <values>
+        <field>MessageWhenFailed__c</field>
+        <value
+      xsi:type="xsd:string"
+    >{!Name} has had no activity for over 2 years. Review whether this personal data must be retained or purged.</value>
+    </values>
+    <values>
+        <field>MessageWhenCannotRun__c</field>
+        <value
+      xsi:type="xsd:string"
+    >Could not evaluate data-retention window. Contact your administrator.</value>
+    </values>
+    <values>
+        <field>RunThisCheckWhen__c</field>
+        <value xsi:type="xsd:string">Formula</value>
+    </values>
+    <values>
+        <field>RunWhenFormula__c</field>
+        <value xsi:type="xsd:string">NOT(ISBLANK(LastActivityDate))</value>
+    </values>
+    <values>
+        <field>RunOrder__c</field>
+        <value xsi:type="xsd:double">90</value>
+    </values>
+    <values>
+        <field>IsActive__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

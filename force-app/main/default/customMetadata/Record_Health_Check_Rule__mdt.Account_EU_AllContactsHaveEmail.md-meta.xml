@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+  xmlns="http://soap.sforce.com/2006/04/metadata"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>EU - All Contacts Have Email</label>
+    <protected>false</protected>
+    <values>
+        <field>Record_Health_Check_Set__c</field>
+        <value xsi:type="xsd:string">Account_Everyday_Use_Cases</value>
+    </values>
+    <values>
+        <field>CheckName__c</field>
+        <value xsi:type="xsd:string">All Contacts Have an Email Address</value>
+    </values>
+    <values>
+        <field>Tooltip__c</field>
+        <value
+      xsi:type="xsd:string"
+    >Same AllRowsPass + IsNotBlank pattern as All Contacts Have Phone, applied to Contact.Email. Contrast with Account_EU_AtLeastOneContactHasEmail (AnyRowPasses) when only one reachable contact is required.</value>
+    </values>
+    <values>
+        <field>CheckMethod__c</field>
+        <value xsi:type="xsd:string">Query</value>
+    </values>
+    <values>
+        <field>DataQuery__c</field>
+        <value
+      xsi:type="xsd:string"
+    >SELECT Email FROM Contact WHERE AccountId = {!Id}</value>
+    </values>
+    <values>
+        <field>FieldToRead__c</field>
+        <value xsi:type="xsd:string">Email</value>
+    </values>
+    <values>
+        <field>WhenMultipleRows__c</field>
+        <value xsi:type="xsd:string">AllRowsPass</value>
+    </values>
+    <values>
+        <field>Operator__c</field>
+        <value xsi:type="xsd:string">IsNotBlank</value>
+    </values>
+    <values>
+        <field>WhenZeroRows__c</field>
+        <value xsi:type="xsd:string">Pass</value>
+    </values>
+    <values>
+        <field>WhenValueIsEmpty__c</field>
+        <value xsi:type="xsd:string">MissingMeansNoMatch</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">Warning</value>
+    </values>
+    <values>
+        <field>MessageWhenFailed__c</field>
+        <value
+      xsi:type="xsd:string"
+    >{!Name} has one or more contacts without an email address. Every contact should be reachable by email.</value>
+    </values>
+    <values>
+        <field>MessageWhenCannotRun__c</field>
+        <value
+      xsi:type="xsd:string"
+    >Could not evaluate this health check. Contact your administrator.</value>
+    </values>
+    <values>
+        <field>RunThisCheckWhen__c</field>
+        <value xsi:type="xsd:string">Always</value>
+    </values>
+    <values>
+        <field>RunOrder__c</field>
+        <value xsi:type="xsd:double">20</value>
+    </values>
+    <values>
+        <field>IsActive__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

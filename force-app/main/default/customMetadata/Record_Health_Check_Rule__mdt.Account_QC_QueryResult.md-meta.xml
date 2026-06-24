@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+  xmlns="http://soap.sforce.com/2006/04/metadata"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>QC - ComparisonValueSource AnotherQuery</label>
+    <protected>false</protected>
+    <values>
+        <field>Record_Health_Check_Set__c</field>
+        <value xsi:type="xsd:string">Account_Query_Coverage</value>
+    </values>
+    <values>
+        <field>CheckName__c</field>
+        <value
+      xsi:type="xsd:string"
+    >Contact Count Is Greater Than or Equal to Open Case Count</value>
+    </values>
+    <values>
+        <field>Tooltip__c</field>
+        <value
+      xsi:type="xsd:string"
+    >ComparisonValueSource=AnotherQuery: the comparison value is not a static or formula-resolved value — it comes from a second SOQL query. Both sides are COUNT() aggregates. Distinct from CompareTwoQueries: this uses the SoqlEvaluator with a secondary scalar, not the DualSoqlEvaluator. The framework executes the comparison query, extracts its single aggregate result, and uses that as the right-hand side of the comparator.</value>
+    </values>
+    <values>
+        <field>CheckMethod__c</field>
+        <value xsi:type="xsd:string">Query</value>
+    </values>
+    <values>
+        <field>DataQuery__c</field>
+        <value
+      xsi:type="xsd:string"
+    >SELECT COUNT() FROM Contact WHERE AccountId = {!Id}</value>
+    </values>
+    <values>
+        <field>WhenMultipleRows__c</field>
+        <value xsi:type="xsd:string">OneResult</value>
+    </values>
+    <values>
+        <field>Operator__c</field>
+        <value xsi:type="xsd:string">GreaterThanOrEqual</value>
+    </values>
+    <values>
+        <field>CompareAgainst__c</field>
+        <value xsi:type="xsd:string">AnotherQuery</value>
+    </values>
+    <values>
+        <field>CompareToQuery__c</field>
+        <value
+      xsi:type="xsd:string"
+    >SELECT COUNT() FROM Case WHERE AccountId = {!Id} AND IsClosed = false</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">Info</value>
+    </values>
+    <values>
+        <field>MessageWhenFailed__c</field>
+        <value
+      xsi:type="xsd:string"
+    >{!Name} has more open cases than contacts. The support load may be disproportionate to the account&apos;s engagement footprint.</value>
+    </values>
+    <values>
+        <field>RunThisCheckWhen__c</field>
+        <value xsi:type="xsd:string">Always</value>
+    </values>
+    <values>
+        <field>RunOrder__c</field>
+        <value xsi:type="xsd:double">110</value>
+    </values>
+    <values>
+        <field>IsActive__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

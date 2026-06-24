@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+  xmlns="http://soap.sforce.com/2006/04/metadata"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>QC - NotEquals</label>
+    <protected>false</protected>
+    <values>
+        <field>Record_Health_Check_Set__c</field>
+        <value xsi:type="xsd:string">Account_Query_Coverage</value>
+    </values>
+    <values>
+        <field>CheckName__c</field>
+        <value xsi:type="xsd:string">Account Rating Is Not Cold</value>
+    </values>
+    <values>
+        <field>Tooltip__c</field>
+        <value
+      xsi:type="xsd:string"
+    >NotEquals comparator: field must not equal the given static value. Formula applicability skips when Rating is blank — comparing a blank field to "Cold" via NotEquals would vacuously pass, which is misleading.</value>
+    </values>
+    <values>
+        <field>CheckMethod__c</field>
+        <value xsi:type="xsd:string">Query</value>
+    </values>
+    <values>
+        <field>DataQuery__c</field>
+        <value
+      xsi:type="xsd:string"
+    >SELECT Rating FROM Account WHERE Id = {!Id} LIMIT 1</value>
+    </values>
+    <values>
+        <field>FieldToRead__c</field>
+        <value xsi:type="xsd:string">Rating</value>
+    </values>
+    <values>
+        <field>WhenMultipleRows__c</field>
+        <value xsi:type="xsd:string">OneResult</value>
+    </values>
+    <values>
+        <field>Operator__c</field>
+        <value xsi:type="xsd:string">NotEquals</value>
+    </values>
+    <values>
+        <field>CompareAgainst__c</field>
+        <value xsi:type="xsd:string">FixedValue</value>
+    </values>
+    <values>
+        <field>FixedValue__c</field>
+        <value xsi:type="xsd:string">Cold</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">Info</value>
+    </values>
+    <values>
+        <field>MessageWhenFailed__c</field>
+        <value
+      xsi:type="xsd:string"
+    >{!Name} is rated Cold. Review whether this account should remain active in the pipeline.</value>
+    </values>
+    <values>
+        <field>RunThisCheckWhen__c</field>
+        <value xsi:type="xsd:string">Formula</value>
+    </values>
+    <values>
+        <field>RunWhenFormula__c</field>
+        <value xsi:type="xsd:string">NOT(ISBLANK(TEXT(Rating)))</value>
+    </values>
+    <values>
+        <field>RunOrder__c</field>
+        <value xsi:type="xsd:double">30</value>
+    </values>
+    <values>
+        <field>IsActive__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

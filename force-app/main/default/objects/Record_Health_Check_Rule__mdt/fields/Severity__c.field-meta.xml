@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Severity__c</fullName>
+    <label>Severity</label>
+    <description
+  >Business impact level applied only when this check results in FAIL. Error shows red, Warning shows amber, Info shows blue. Has no effect on PASS, SKIPPED, UNABLE_TO_EVALUATE, or ERROR states.</description>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Error</fullName>
+                <default>false</default>
+                <label>Error</label>
+            </value>
+            <value>
+                <fullName>Warning</fullName>
+                <default>true</default>
+                <label>Warning</label>
+            </value>
+            <value>
+                <fullName>Info</fullName>
+                <default>false</default>
+                <label>Info</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+        <inlineHelpText
+  >Sets the visual severity when this check fails. Error = red, Warning = amber, Info = blue. Does not affect non-FAIL outcomes.</inlineHelpText>
+    <required>true</required>
+</CustomField>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PanelSubheading__c</fullName>
+    <label>Panel Subheading</label>
+    <description
+  >Optional one-line text shown under the Panel Heading. Keep it to a sentence or two.</description>
+    <type>LongTextArea</type>
+    <length>32768</length>
+    <visibleLines>3</visibleLines>
+        <inlineHelpText
+  >Optional. A short line shown under the Panel Heading to explain what the panel checks.</inlineHelpText>
+    <required>false</required>
+</CustomField>

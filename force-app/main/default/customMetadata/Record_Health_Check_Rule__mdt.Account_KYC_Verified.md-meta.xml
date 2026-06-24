@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+  xmlns="http://soap.sforce.com/2006/04/metadata"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>Comp - KYC Verified</label>
+    <protected>false</protected>
+    <values>
+        <field>Record_Health_Check_Set__c</field>
+        <value xsi:type="xsd:string">Account_Compliance_Audit</value>
+    </values>
+    <values>
+        <field>CheckName__c</field>
+        <value xsi:type="xsd:string">KYC Verification Complete</value>
+    </values>
+    <values>
+        <field>Tooltip__c</field>
+        <value
+      xsi:type="xsd:string"
+    >KYC/AML: customer accounts must have KYC_Status__c = Verified. Replace with your org&apos;s custom field and picklist values.</value>
+    </values>
+    <values>
+        <field>CheckMethod__c</field>
+        <value xsi:type="xsd:string">Formula</value>
+    </values>
+    <values>
+        <field>PassFailFormula__c</field>
+        <value
+      xsi:type="xsd:string"
+    >ISPICKVAL(KYC_Status__c, &quot;Verified&quot;)</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">Error</value>
+    </values>
+    <values>
+        <field>MessageWhenFailed__c</field>
+        <value
+      xsi:type="xsd:string"
+    >{!Name} is an active customer without completed KYC verification. Block further activity until identity is verified.</value>
+    </values>
+    <values>
+        <field>MessageWhenCannotRun__c</field>
+        <value
+      xsi:type="xsd:string"
+    >Could not evaluate KYC status — confirm KYC_Status__c exists. Contact your administrator.</value>
+    </values>
+    <values>
+        <field>RunThisCheckWhen__c</field>
+        <value xsi:type="xsd:string">Formula</value>
+    </values>
+    <values>
+        <field>RunWhenFormula__c</field>
+        <value
+      xsi:type="xsd:string"
+    >ISPICKVAL(Type, &quot;Customer&quot;)</value>
+    </values>
+    <values>
+        <field>RunOrder__c</field>
+        <value xsi:type="xsd:double">60</value>
+    </values>
+    <values>
+        <field>IsActive__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

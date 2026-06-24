@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PassedChecksDisplay__c</fullName>
+    <label>Passed Checks Display</label>
+    <description
+  >Controls what happens to checks that PASS. Show each row keeps them listed. Hide rows, show count only removes the passed rows from the list; their count still appears in the summary bar at the bottom of the card.</description>
+    <inlineHelpText
+  >Show each row = list every passed check. Hide rows, show count only = remove passed rows from the list (the count still shows in the summary bar at the bottom of the card).</inlineHelpText>
+    <required>true</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Show</fullName>
+                <default>false</default>
+                <label>Show each row</label>
+            </value>
+            <value>
+                <fullName>Hide</fullName>
+                <default>true</default>
+                <label>Hide rows, show count only</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

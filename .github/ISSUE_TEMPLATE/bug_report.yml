@@ -1,0 +1,72 @@
+name: Bug report
+description: Report something that does not work as documented
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a bug. Please **do not include** Salesforce access tokens,
+        session IDs, full Org IDs, or real customer record data. Redact screenshots.
+        Security vulnerabilities go through the [Security policy](../blob/main/SECURITY.md) instead.
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Preflight
+      options:
+        - label: I searched [existing issues](../issues) and this is not a duplicate.
+          required: true
+        - label: This is a functional bug, not a security vulnerability (those go through the Security policy).
+          required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you expect, and what did you observe instead?
+      placeholder: I expected the check to pass, but the card showed FAIL with message "…".
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Numbered steps. Include the Check Set and Rule Developer Names involved.
+      placeholder: |
+        1. Check Set Developer Name: Account_Data_Quality
+        2. Rule Developer Name: Account_DQ_BillingCity
+        3. On an Account where BillingCity is blank, open the record page…
+    validations:
+      required: true
+  - type: textarea
+    id: console
+    attributes:
+      label: Debug Mode console output (optional)
+      description: >
+        If Debug Mode is enabled (Check Set flag + Record Health Check Admin permission),
+        paste the `[RHC]` summary from the browser console. Redact record data and Org IDs.
+      render: text
+  - type: input
+    id: object
+    attributes:
+      label: Object and evaluator
+      placeholder: "Account · Query check"
+    validations:
+      required: true
+  - type: dropdown
+    id: org-type
+    attributes:
+      label: Org type
+      options:
+        - Production
+        - Sandbox
+        - Scratch org
+        - Developer Edition
+    validations:
+      required: true
+  - type: input
+    id: api-version
+    attributes:
+      label: Org API version
+      placeholder: "63.0 or higher"
+    validations:
+      required: true

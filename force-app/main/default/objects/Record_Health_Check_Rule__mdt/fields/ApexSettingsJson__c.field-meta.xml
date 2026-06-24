@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ApexSettingsJson__c</fullName>
+    <label>Apex Settings (JSON)</label>
+    <description
+  >Optional JSON settings passed to the Apex class. Must be valid JSON. Invalid JSON makes the check report that it can't run (reason INVALID_APEX_PARAMETERS).</description>
+    <type>LongTextArea</type>
+    <length>32768</length>
+    <visibleLines>5</visibleLines>
+        <inlineHelpText
+  >Optional. Valid JSON passed to your Apex class, e.g. {"threshold": 5}. Leave blank if the class needs no settings.</inlineHelpText>
+    <required>false</required>
+</CustomField>

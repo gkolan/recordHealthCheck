@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  local-gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run prettier:verify
+      - run: npm run lint
+      - run: npm run test:unit:coverage
+      - name: Validate XML
+        run: python3 -c "import pathlib,xml.etree.ElementTree as ET; [ET.parse(p) for root in ('force-app','manifest') for p in pathlib.Path(root).rglob('*.xml')]"

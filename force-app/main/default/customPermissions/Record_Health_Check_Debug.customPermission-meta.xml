@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description
+  >Allows viewing extra troubleshooting detail on the health check card and in the browser console when Debug Mode is enabled on the Check Set. Assign via the Record Health Check Admin permission set.</description>
+    <label>Record Health Check Debug</label>
+    <isLicensed>false</isLicensed>
+</CustomPermission>

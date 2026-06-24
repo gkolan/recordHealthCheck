@@ -1,0 +1,38 @@
+name: Salesforce release gate
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scratch-org:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm install --global @salesforce/cli
+      - run: echo y | sf plugins install code-analyzer
+      # Always write the full HTML report for triage, then fail the job on any
+      # violation of High severity or worse (threshold 2 = Critical+High on the
+      # 1–5 scale). This closes the P0-03 false-green gate: previously the
+      # analyzer ran but its findings never failed CI. Confirmed false positives
+      # should be suppressed via a code-analyzer config file (not by removing
+      # this threshold).
+      - run: sf code-analyzer run --workspace force-app --rule-selector Recommended --output-file code-analyzer.html --severity-threshold 2
+      - name: Authenticate Dev Hub
+        env:
+          SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
+        run: echo "$SFDX_AUTH_URL" | sf org login sfdx-url --sfdx-url-stdin --alias devhub --set-default-dev-hub
+      - run: sf org create scratch --definition-file config/project-scratch-def.json --alias rhc-ci --set-default --duration-days 1 --wait 15
+      - run: sf project deploy start --manifest manifest/package.xml --target-org rhc-ci --test-level RunLocalTests --wait 30
+      - run: sf apex run test --target-org rhc-ci --test-level RunLocalTests --code-coverage --wait 30 --result-format human
+      - name: Run metadata validator
+        run: sf apex run --target-org rhc-ci --file scripts/apex/validateMetadata.apex
+      - if: always()
+        run: sf org delete scratch --target-org rhc-ci --no-prompt

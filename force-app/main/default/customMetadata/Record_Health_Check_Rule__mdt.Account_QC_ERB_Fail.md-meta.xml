@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+  xmlns="http://soap.sforce.com/2006/04/metadata"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>QC - EmptyResultBehavior Fail</label>
+    <protected>false</protected>
+    <values>
+        <field>Record_Health_Check_Set__c</field>
+        <value xsi:type="xsd:string">Account_Query_Coverage</value>
+    </values>
+    <values>
+        <field>CheckName__c</field>
+        <value
+      xsi:type="xsd:string"
+    >Has at Least One Closed Won Opportunity</value>
+    </values>
+    <values>
+        <field>Tooltip__c</field>
+        <value
+      xsi:type="xsd:string"
+    >EmptyResultBehavior=Fail: zero rows returned means the check fails. Used when an empty result is itself the problem — no Closed Won opportunities means the account has never converted. AnyRowPasses with GreaterThanOrEqual 0 passes for any row that exists; Fail fires when no rows exist at all.</value>
+    </values>
+    <values>
+        <field>CheckMethod__c</field>
+        <value xsi:type="xsd:string">Query</value>
+    </values>
+    <values>
+        <field>DataQuery__c</field>
+        <value
+      xsi:type="xsd:string"
+    >SELECT Amount FROM Opportunity WHERE AccountId = {!Id} AND StageName = &apos;Closed Won&apos;</value>
+    </values>
+    <values>
+        <field>FieldToRead__c</field>
+        <value xsi:type="xsd:string">Amount</value>
+    </values>
+    <values>
+        <field>WhenMultipleRows__c</field>
+        <value xsi:type="xsd:string">AnyRowPasses</value>
+    </values>
+    <values>
+        <field>Operator__c</field>
+        <value xsi:type="xsd:string">GreaterThanOrEqual</value>
+    </values>
+    <values>
+        <field>CompareAgainst__c</field>
+        <value xsi:type="xsd:string">FixedValue</value>
+    </values>
+    <values>
+        <field>FixedValue__c</field>
+        <value xsi:type="xsd:string">0</value>
+    </values>
+    <values>
+        <field>WhenZeroRows__c</field>
+        <value xsi:type="xsd:string">Fail</value>
+    </values>
+    <values>
+        <field>WhenValueIsEmpty__c</field>
+        <value xsi:type="xsd:string">SkipRecordsWithMissingValue</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">Warning</value>
+    </values>
+    <values>
+        <field>MessageWhenFailed__c</field>
+        <value
+      xsi:type="xsd:string"
+    >{!Name} has no Closed Won opportunities. This account has not yet converted.</value>
+    </values>
+    <values>
+        <field>RunThisCheckWhen__c</field>
+        <value xsi:type="xsd:string">Always</value>
+    </values>
+    <values>
+        <field>RunOrder__c</field>
+        <value xsi:type="xsd:double">80</value>
+    </values>
+    <values>
+        <field>IsActive__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

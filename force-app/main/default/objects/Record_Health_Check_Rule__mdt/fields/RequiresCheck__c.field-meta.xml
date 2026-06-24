@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RequiresCheck__c</fullName>
+    <label>Requires Passing Check</label>
+    <description
+  >Optional. Enter the Record Name (API Name / DeveloperName) of another active check in the same Check Set that must PASS before this check runs - this is the value shown in the Name column / Record Name field in Setup, NOT the Check Name users see. The prerequisite must have a lower Run Order. If it does not pass, this check is skipped. A value that does not match an existing rule also causes this check to be skipped silently at runtime; it is reported only when the Check Set configuration is validated, not when you save this record.</description>
+    <type>Text</type>
+    <length>255</length>
+    <inlineHelpText
+  >Optional. The Record Name (API Name) of an earlier check (lower Run Order) in this Check Set - shown in Setup, not the Check Name. If it fails or the name does not match a rule, this check is skipped.</inlineHelpText>
+    <required>false</required>
+</CustomField>

@@ -1,0 +1,812 @@
+/* ── Error banner ──────────────────────────────────────────────────────────── */
+.rhc-error-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  padding: 0.875rem 1rem;
+  background: var(--slds-g-color-error-base-95, #fff8f8);
+  border: 1px solid var(--slds-g-color-error-base-80, #fccfcf);
+  border-left: 4px solid var(--slds-g-color-error-base-40, #ba0517);
+  border-radius: 0.375rem;
+  margin: 0.75rem;
+}
+
+.rhc-error-banner__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.rhc-error-banner__title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--slds-g-color-error-base-30, #8f0311);
+}
+
+.rhc-error-banner__msg {
+  font-size: 0.75rem;
+  color: var(--slds-g-color-neutral-base-40, #706e6b);
+}
+
+.rhc-error-banner__hint {
+  font-size: 0.75rem;
+  color: var(--slds-g-color-neutral-base-40, #706e6b);
+  margin-top: 0.375rem;
+  padding-top: 0.375rem;
+  border-top: 1px solid var(--slds-g-color-error-base-80, #fccfcf);
+}
+
+.rhc-pre-run-hint {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  font-size: 0.8125rem;
+  color: var(--slds-g-color-neutral-base-40, #706e6b);
+  border-bottom: 1px solid var(--slds-g-color-border-base-1, #e5e5e5);
+}
+
+.rhc-card {
+  display: block;
+  background: var(--slds-g-color-neutral-base-100, #ffffff);
+  /* A clearly visible border + soft elevation so the card reads as a
+     self-contained unit on ANY surface — including a white Lightning tab,
+     where the lightest border/shadow tokens would otherwise vanish and the
+     component would look borderless. */
+  border: 1px solid var(--slds-g-color-border-base-2, #c9c7c5);
+  /* Match standard Lightning cards (related lists, record panels). */
+  border-radius: var(--slds-g-radius-border-2, 0.25rem);
+  box-shadow: var(--slds-g-shadow-2, 0 2px 6px 0 rgba(0, 0, 0, 0.16));
+  /* Let row/summary tooltips extend past the card edge; bottom rounding is applied
+     on the last body child instead of clipping popovers. */
+  overflow: visible;
+}
+
+.rhc-body > :last-child {
+  border-bottom-left-radius: var(--slds-g-radius-border-2, 0.25rem);
+  border-bottom-right-radius: var(--slds-g-radius-border-2, 0.25rem);
+}
+
+.rhc-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  min-width: 0;
+  padding: 0.875rem 1rem 0.875rem;
+  background: var(--slds-g-color-neutral-base-99, #fafafa);
+  border-bottom: 1px solid var(--slds-g-color-border-base-1, #e5e5e5);
+  border-top-left-radius: var(--slds-g-radius-border-2, 0.25rem);
+  border-top-right-radius: var(--slds-g-radius-border-2, 0.25rem);
+}
+
+/* Title + action button share one row; the description below spans the full
+   header width so it fills the space under the button instead of leaving a
+   tall empty column beside a short button (the button column no longer drives
+   the row height). */
+.rhc-header__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.rhc-header__main {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.rhc-header__title {
+  display: block;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--slds-g-color-neutral-base-10, #181818);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.rhc-header__desc {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--slds-g-color-neutral-base-50, #706e6b);
+  line-height: 1.35;
+  margin: 0;
+}
+
+.rhc-header__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex: 0 0 auto;
+  gap: 0.375rem;
+}
+
+.rhc-check-pill {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Fixed width sized for "Rerun" + glyph slot so Run/Rerun share the same compact
+   footprint. In-flight runs keep that label and swap the play icon for a spinner
+   (no "Running…" text — that word was widening the button for no visual gain). */
+.rhc-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  min-width: 5rem;
+  padding-left: 0.625rem;
+  padding-right: 0.625rem;
+  gap: 0.35rem;
+}
+
+@keyframes rhc-action-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Reserves space for play ▶ or spinner so the label does not shift on click. */
+.rhc-action-button__glyph {
+  flex: 0 0 0.75rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rhc-action-button__spinner {
+  flex: none;
+  width: 0.625rem;
+  height: 0.625rem;
+  border: 1.5px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: rhc-action-spin 0.65s linear infinite;
+}
+
+/* CSS play triangle (▶) — drawn with borders rather than lightning-icon so it
+   always renders. currentColor tracks the button text (brand when active, muted
+   when disabled). */
+.rhc-action-button__play {
+  flex: none;
+  width: 0;
+  height: 0;
+  border-top: 0.3rem solid transparent;
+  border-bottom: 0.3rem solid transparent;
+  border-left: 0.45rem solid currentColor;
+}
+
+.rhc-check-pill--warn {
+  background: var(--slds-g-color-warning-base-95, #fff8e6);
+  border-color: var(--slds-g-color-warning-base-70, #f0c050);
+  color: var(--slds-g-color-warning-base-20, #7a5200);
+}
+
+/* ── Card body wrapper ─────────────────────────────────────────────────────── */
+.rhc-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.rhc-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 1.375rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.rhc-stat:focus {
+  outline: 2px solid var(--slds-g-color-brand-base-50, #0176d3);
+  outline-offset: 1px;
+}
+
+.rhc-stat--pass {
+  background: var(--slds-g-color-success-base-95, #eaf5ea);
+  color: var(--slds-g-color-success-base-20, #1a7238);
+}
+.rhc-stat--error {
+  background: var(--slds-g-color-error-base-95, #feecea);
+  color: var(--slds-g-color-error-base-30, #8f0311);
+}
+.rhc-stat--warning {
+  background: var(--slds-g-color-warning-base-95, #fff3e0);
+  color: var(--slds-g-color-warning-base-20, #7a5200);
+}
+.rhc-stat--info {
+  background: var(--slds-g-color-brand-base-95, #eaf2fb);
+  color: var(--slds-g-color-brand-base-30, #014486);
+}
+.rhc-stat--skipped,
+.rhc-stat--unable {
+  background: var(--slds-g-color-neutral-base-95, #f3f3f3);
+  color: var(--slds-g-color-neutral-base-40, #706e6b);
+}
+
+/* ── Summary stats bar ─────────────────────────────────────────────────────── */
+.rhc-stats-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  padding: 0.625rem 1rem;
+  border-top: 1px solid var(--slds-g-color-border-base-1, #f0f0f0);
+  /* Positioning context for summary-pill tooltips (bubble spans the bar). */
+  position: relative;
+}
+
+/* Grid stack: pill label + nubbin host share one cell. The footer anchor stays
+   position:static so its tooltip bubble (::after) escapes to the stats bar and can
+   span the full card width (like the rule rows). The nubbin host is a later sibling
+   of the anchor so the arrow is driven by the anchor's own :hover/:focus-visible and
+   fades in together with the bubble, not on a separate pill-hover timer. */
+.rhc-summary-pill {
+  display: inline-grid;
+  position: static;
+}
+
+.rhc-summary-pill > .rhc-tooltip-anchor--footer {
+  grid-area: 1 / 1;
+  position: static;
+}
+
+.rhc-stat__nubbin-host {
+  grid-area: 1 / 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.rhc-stat__nubbin {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 50%;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-left: -0.25rem;
+  background: var(--slds-g-color-neutral-base-95, #f3f3f3);
+  border-top: 1px solid var(--slds-g-color-border-base-3, #aeacaa);
+  border-left: 1px solid var(--slds-g-color-border-base-3, #aeacaa);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(0.25rem) rotate(45deg);
+  transition:
+    opacity 0.12s ease,
+    transform 0.12s ease;
+  transition-delay: 0s;
+  z-index: 101;
+}
+
+/* Drive the nubbin from the anchor's own :hover/:focus-visible (it is a later
+   sibling), mirroring the rule row's ::before, so the arrow and the bubble fade in
+   together with the same dwell delay instead of on a separate pill-hover timer. */
+.rhc-tooltip-anchor--footer:hover ~ .rhc-stat__nubbin-host .rhc-stat__nubbin {
+  opacity: 1;
+  transform: translateY(0) rotate(45deg);
+  transition-delay: var(--rhc-tooltip-show-delay);
+}
+
+.rhc-tooltip-anchor--footer:focus-visible
+  ~ .rhc-stat__nubbin-host
+  .rhc-stat__nubbin {
+  opacity: 1;
+  transform: translateY(0) rotate(45deg);
+  transition-delay: var(--rhc-tooltip-focus-show-delay);
+}
+
+/* ── Check list ────────────────────────────────────────────────────────────── */
+.rhc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.rhc-list:not(:empty) {
+  padding-bottom: 0.25rem;
+}
+
+/* ── Check row ─────────────────────────────────────────────────────────────── */
+.rhc-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin: 0;
+  /* Content sits to the right of the 3px status accent element. */
+  padding: 0.625rem 1rem 0.625rem calc(3px + 0.875rem);
+  transition: background 0.1s ease;
+  position: relative;
+}
+
+/* Full-height status accent, flush to the card's left inner edge. A real element
+   (not box-shadow or ::before) so it renders reliably in LWC shadow DOM and
+   does not collide with tooltip nubbins on described rows. */
+.rhc-row__accent {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  pointer-events: none;
+}
+
+.rhc-row__accent--pass {
+  background: var(--slds-g-color-success-base-40, #2e844a);
+}
+.rhc-row__accent--error {
+  background: var(--slds-g-color-error-base-40, #ba0517);
+}
+.rhc-row__accent--warning {
+  background: var(--slds-g-color-warning-base-50, #dd7a01);
+}
+.rhc-row__accent--info {
+  background: var(--slds-g-color-brand-base-50, #0176d3);
+}
+.rhc-row__accent--unable,
+.rhc-row__accent--skipped {
+  background: var(--slds-g-color-neutral-base-70, #c9c7c5);
+}
+
+.rhc-row:focus {
+  outline: 2px solid var(--slds-g-color-brand-base-50, #0176d3);
+  outline-offset: -2px;
+  background: var(--slds-g-color-neutral-base-97, #f5f5f5);
+}
+
+.rhc-row + .rhc-row {
+  border-top: 1px solid var(--slds-g-color-border-base-1, #f0f0f0);
+}
+
+.rhc-row:hover {
+  background: var(--slds-g-color-neutral-base-97, #f5f5f5);
+}
+
+/* ── Row icon ──────────────────────────────────────────────────────────────── */
+.rhc-row__icon {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.0625rem;
+}
+
+.rhc-dot--pending {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--slds-g-color-neutral-base-70, #c9c7c5);
+}
+
+.rhc-status-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.875rem;
+  height: 0.875rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.rhc-status-icon--pass {
+  background: var(--slds-g-color-success-base-40, #2e844a);
+}
+
+.rhc-status-icon--pass::after {
+  content: "";
+  width: 0.25rem;
+  height: 0.45rem;
+  border: solid var(--slds-g-color-neutral-base-100, #ffffff);
+  border-width: 0 0.125rem 0.125rem 0;
+  transform: rotate(45deg) translate(-0.025rem, -0.025rem);
+}
+
+.rhc-status-icon--error {
+  background: var(--slds-g-color-error-base-40, #ba0517);
+  color: var(--slds-g-color-neutral-base-100, #ffffff);
+}
+
+.rhc-status-icon--error::after {
+  content: "!";
+}
+
+.rhc-status-icon--warning {
+  background: var(--slds-g-color-warning-base-50, #dd7a01);
+  color: var(--slds-g-color-neutral-base-100, #ffffff);
+}
+
+.rhc-status-icon--warning::after {
+  content: "!";
+}
+
+.rhc-status-icon--info {
+  background: var(--slds-g-color-brand-base-50, #0176d3);
+  color: var(--slds-g-color-neutral-base-100, #ffffff);
+}
+
+.rhc-status-icon--info::after {
+  content: "i";
+}
+
+.rhc-status-icon--skipped,
+.rhc-status-icon--unable {
+  background: var(--slds-g-color-neutral-base-60, #b0adab);
+  color: var(--slds-g-color-neutral-base-100, #ffffff);
+}
+
+.rhc-status-icon--skipped::after {
+  content: "-";
+}
+
+.rhc-status-icon--unable::after {
+  content: "?";
+}
+
+/* ── Row content ───────────────────────────────────────────────────────────── */
+.rhc-row__content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: 0;
+}
+
+.rhc-row__label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--slds-g-color-neutral-base-10, #181818);
+  line-height: 1.3;
+}
+
+.rhc-row__heading {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+}
+
+.rhc-row__message {
+  font-size: 0.75rem;
+  line-height: 1.35;
+  margin-top: 0.25rem;
+  color: var(--slds-g-color-neutral-base-30, #3e3e3c);
+}
+
+.rhc-row__message--error {
+  color: var(--slds-g-color-error-base-30, #8f0311);
+}
+.rhc-row__message--warning {
+  color: var(--slds-g-color-neutral-base-20, #2e2e2e);
+  font-weight: 400;
+}
+.rhc-row__message--info {
+  color: var(--slds-g-color-neutral-base-30, #3e3e3c);
+}
+.rhc-row__message--unable {
+  color: var(--slds-g-color-neutral-base-40, #706e6b);
+}
+
+/* ── Found / expected comparison ────────────────────────────────────────────── */
+/* Stack the two clauses so the layout is identical whether the values are short
+   or long — "Found …" always on its own line, "Expected …" on the next — rather
+   than reflowing to one or two lines depending on width. */
+.rhc-row__comparison {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  margin-top: 0.3rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+/* One clause: caption + value, kept together on a single line (value wraps
+   within the line if very long). */
+.rhc-cmp__pair {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Caption ("Found" / "Expected") — small uppercase label that de-emphasizes the
+   connective words so the eye lands on the value chip beside it. */
+.rhc-cmp__key {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--slds-g-color-neutral-base-50, #706e6b);
+}
+
+/* The actual/expected value, shown monospaced in a subtle chip so quoted
+   values and operators read as data rather than prose. */
+.rhc-cmp__val {
+  font-family: var(
+    --slds-g-font-family-monospace,
+    "SF Mono",
+    sfmono-regular,
+    ui-monospace,
+    menlo,
+    consolas,
+    monospace
+  );
+  font-size: 0.75rem;
+  color: var(--slds-g-color-neutral-base-20, #2b2826);
+  background: var(--slds-g-color-neutral-base-95, #f3f3f3);
+  padding: 0.05rem 0.3rem;
+  border-radius: 0.2rem;
+  word-break: break-word;
+}
+
+/* ── Hover/focus tooltips ──────────────────────────────────────────────────── */
+/* Dwell-before-show delays live on :host (the component root), NOT on
+   .rhc-tooltip-anchor. The summary-pill arrow (.rhc-stat__nubbin) is a *sibling*
+   of its anchor, not a descendant, so a var declared on the anchor never reaches
+   it — the var() would resolve to invalid and transition-delay would compute to
+   the initial 0s, making the arrow fade in immediately while the bubble still
+   waits the dwell delay (arrow appears first, then the bubble). Declaring the
+   delays at the root lets every subtree — anchor pseudo-elements AND the sibling
+   nubbin — inherit the same values so the arrow and bubble fade in together. */
+:host {
+  /* Dwell before show (mouse): avoids flashing while scanning rows. */
+  --rhc-tooltip-show-delay: 0.5s;
+  /* Keyboard focus: shorter delay so screen-reader users are not kept waiting. */
+  --rhc-tooltip-focus-show-delay: 0.15s;
+}
+
+.rhc-tooltip-anchor {
+  --rhc-tooltip-left: 0;
+  --rhc-tooltip-transform: translateY(0.25rem);
+  --rhc-tooltip-hover-transform: translateY(0);
+}
+
+.rhc-tooltip-anchor::before,
+.rhc-tooltip-anchor::after {
+  position: absolute;
+  left: var(--rhc-tooltip-left);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.12s ease,
+    transform 0.12s ease;
+  transition-delay: 0s;
+  z-index: 100;
+}
+
+/* No arrow: a light popover with a border can't carry a clean bordered arrow,
+   so the bubble stands on its own (like a small popover) for all tooltips. */
+.rhc-tooltip-anchor::before {
+  content: none;
+}
+
+.rhc-tooltip-anchor::after {
+  content: attr(data-tooltip);
+  top: calc(100% + 0.5rem);
+  width: max-content;
+  max-width: min(40rem, calc(100vw - 3rem));
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.25rem;
+  /* Light gray surface (a step darker than the white cards) with a crisp border
+     and elevation, so the tooltip stays light but is clearly its own layer
+     rather than blending into the white content behind it. */
+  background: var(--slds-g-color-neutral-base-95, #f3f3f3);
+  color: var(--slds-g-color-neutral-base-10, #181818);
+  border: 1px solid var(--slds-g-color-border-base-3, #aeacaa);
+  box-shadow: var(--slds-g-shadow-3, 0 2px 8px rgba(0, 0, 0, 0.2));
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.55;
+  white-space: normal;
+  transform: var(--rhc-tooltip-transform);
+}
+
+/* Trigger on hover, or on :focus-visible (keyboard focus) only — never on plain
+   :focus. Show waits for a dwell delay; hide is immediate when the pointer or
+   focus leaves. */
+.rhc-tooltip-anchor:hover::before,
+.rhc-tooltip-anchor:hover::after {
+  opacity: 1;
+  transform: var(--rhc-tooltip-hover-transform);
+  transition-delay: var(--rhc-tooltip-show-delay);
+}
+
+.rhc-tooltip-anchor:focus-visible::before,
+.rhc-tooltip-anchor:focus-visible::after {
+  opacity: 1;
+  transform: var(--rhc-tooltip-hover-transform);
+  transition-delay: var(--rhc-tooltip-focus-show-delay);
+}
+
+/* Summary pill tooltip: the anchor stays position:static so the bubble escapes to
+   the stats bar and spans the full card width (left/right:1rem), matching the rule
+   rows. It opens downward by default (base top); JS adds --flip-up near the bottom
+   of the viewport to open it upward instead. */
+.rhc-tooltip-anchor--footer {
+  position: static;
+}
+
+.rhc-tooltip-anchor--footer::after {
+  left: 1rem;
+  right: 1rem;
+  width: auto;
+  max-width: none;
+}
+
+.rhc-tooltip-anchor--stat {
+  --rhc-tooltip-left: 0;
+}
+
+.rhc-tooltip-anchor--row {
+  --rhc-tooltip-left: 2.75rem;
+}
+
+/* Anchor the bubble to the row's own box (the <li> is position: relative and
+   spans the full card width) by pinning both left and right edges, instead of a
+   fixed 24rem keyed off 100vw. In a narrow record-page column the old width ran
+   past the card's right edge and was clipped; this keeps it inside the card at
+   any column width and lets the text wrap and grow downward. */
+.rhc-tooltip-anchor--row::after {
+  left: 1rem;
+  right: 1rem;
+  width: auto;
+  max-width: none;
+}
+
+/* Bordered "nubbin" pointing up from the bubble to the row it describes: a
+   square with two bordered edges rotated 45°, so the apex carries the same
+   border as the bubble. z-index above the bubble hides the seam where they
+   meet. Re-enables ::before, which the base rule turns off for other tooltips. */
+.rhc-tooltip-anchor--row::before {
+  content: "";
+  top: calc(100% + 0.25rem);
+  width: 0.5rem;
+  height: 0.5rem;
+  background: var(--slds-g-color-neutral-base-95, #f3f3f3);
+  border-top: 1px solid var(--slds-g-color-border-base-3, #aeacaa);
+  border-left: 1px solid var(--slds-g-color-border-base-3, #aeacaa);
+  transform: translateY(0.25rem) rotate(45deg);
+  z-index: 101;
+}
+
+/* Match the bubble's dwell delay so the arrow and bubble fade in together —
+   without the transition-delay the arrow (which inherits the base 0s) would
+   appear immediately while the ::after bubble still waits the dwell delay. */
+.rhc-tooltip-anchor--row:hover::before {
+  opacity: 1;
+  transform: translateY(0) rotate(45deg);
+  transition-delay: var(--rhc-tooltip-show-delay);
+}
+
+.rhc-tooltip-anchor--row:focus-visible::before {
+  opacity: 1;
+  transform: translateY(0) rotate(45deg);
+  transition-delay: var(--rhc-tooltip-focus-show-delay);
+}
+
+.rhc-tooltip-anchor--footer::before {
+  content: none;
+}
+
+/* ── Flip up ──────────────────────────────────────────────────────────────────
+   The JS controller adds --flip-up on hover/focus when the anchor sits near the
+   bottom of the viewport, so the tooltip opens ABOVE the anchor instead of below
+   and its arrow points down. Applies uniformly to rule rows and summary pills. */
+.rhc-tooltip-anchor--flip-up {
+  --rhc-tooltip-transform: translateY(-0.25rem);
+}
+
+.rhc-tooltip-anchor--flip-up::after {
+  top: auto;
+  bottom: calc(100% + 0.5rem);
+}
+
+/* Flip the arrow to sit above the anchor and point down. border-bottom/right +
+   rotate(45deg) makes the apex point downward (mirror of the default up arrow).
+   Covers the rule row's ::before nubbin and the summary pill's sibling nubbin. */
+.rhc-tooltip-anchor--row.rhc-tooltip-anchor--flip-up::before,
+.rhc-tooltip-anchor--flip-up ~ .rhc-stat__nubbin-host .rhc-stat__nubbin {
+  top: auto;
+  bottom: calc(100% + 0.25rem);
+  border-top: 0;
+  border-left: 0;
+  border-bottom: 1px solid var(--slds-g-color-border-base-3, #aeacaa);
+  border-right: 1px solid var(--slds-g-color-border-base-3, #aeacaa);
+}
+
+@media (max-width: 30rem) {
+  .rhc-header {
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .rhc-header__main,
+  .rhc-header__actions {
+    width: 100%;
+  }
+
+  .rhc-header__actions {
+    justify-content: flex-end;
+  }
+}
+
+/* ── Debug detail panel (DebugMode__c = true) ──────────────────────────────── */
+.rhc-debug-detail {
+  margin-top: 0.375rem;
+}
+
+.rhc-debug-detail__summary {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--slds-g-color-neutral-base-40, #706e6b);
+  cursor: pointer;
+  user-select: none;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.rhc-debug-detail__summary:hover {
+  color: var(--slds-g-color-neutral-base-20, #3e3e3c);
+}
+
+.rhc-debug-detail__body {
+  margin: 0.375rem 0 0;
+  padding: 0.5rem 0.75rem;
+  background: var(--slds-g-color-neutral-base-95, #f3f3f3);
+  border: 1px solid var(--slds-g-color-border-base-1, #dddbda);
+  border-radius: 0.25rem;
+  font-family: monospace;
+  font-size: 0.6875rem;
+  color: var(--slds-g-color-neutral-base-20, #3e3e3c);
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-x: auto;
+}
+
+/* ── Diagnostics (debug mode only) ───────────────────────────────────────── */
+.rhc-debug-meta {
+  display: block;
+  margin-top: 0.25rem;
+  font-family: monospace;
+  font-size: 0.6875rem;
+  color: var(--slds-g-color-neutral-base-40, #706e6b);
+  letter-spacing: 0.01em;
+}
+
+.rhc-debug-console-hint {
+  margin: 0;
+  padding: 0.375rem 1rem 0.625rem;
+  border-top: 1px solid var(--slds-g-color-border-base-1, #f0f0f0);
+  font-size: 0.6875rem;
+  color: var(--slds-g-color-neutral-base-40, #706e6b);
+  text-align: right;
+}
+
+/* LWC-18: honor the user's reduced-motion preference. Disable the spinner spin
+   and the tooltip open transitions so the component does not animate for users
+   who have asked the OS to minimize motion; tooltips simply appear/disappear. */
+@media (prefers-reduced-motion: reduce) {
+  .rhc-action-button__spinner {
+    animation: none;
+  }
+  .rhc-tooltip-anchor::before,
+  .rhc-tooltip-anchor::after {
+    transition: none;
+  }
+}

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description
+  >Child configuration record defining one individual check inside a Record Health Check Set. Each record represents one named evaluation rule.</description>
+    <label>Record Health Check Rule</label>
+    <pluralLabel>Record Health Check Rules</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

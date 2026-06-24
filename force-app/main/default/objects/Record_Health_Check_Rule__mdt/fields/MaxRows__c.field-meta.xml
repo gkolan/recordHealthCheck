@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MaxRows__c</fullName>
+    <label>Max Rows</label>
+    <description
+  >Optional safety cap on how many rows this check's query may return. Maximum is 2000. Blank uses the default of 2000. You can only lower the cap, not raise it.</description>
+    <type>Number</type>
+    <precision>4</precision>
+    <scale>0</scale>
+        <inlineHelpText
+  >Optional. Lowers the row limit for this check's query (max 2000). Leave blank to use the default of 2000.</inlineHelpText>
+    <required>false</required>
+    <unique>false</unique>
+</CustomField>

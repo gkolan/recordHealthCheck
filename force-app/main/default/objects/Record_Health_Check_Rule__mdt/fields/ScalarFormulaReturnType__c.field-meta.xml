@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ScalarFormulaReturnType__c</fullName>
+    <label>Scalar Formula Return Type</label>
+    <description
+  >Declares the return type of the scalar formula used as a comparison value (Record formula) or as the value to test (list checks). When set to anything other than Auto, the framework evaluates the formula once with that type instead of probing up to eight types. Reduces FormulaEval API usage in bulk/Flow loops. Auto (default) keeps the original probing behavior. Ignored when the check uses no scalar formula.</description>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Auto</fullName>
+                <default>true</default>
+                <label>Auto (detect type)</label>
+            </value>
+            <value>
+                <fullName>Boolean</fullName>
+                <default>false</default>
+                <label>Checkbox (true/false)</label>
+            </value>
+            <value>
+                <fullName>Number</fullName>
+                <default>false</default>
+                <label>Number / Currency / Percent</label>
+            </value>
+            <value>
+                <fullName>Date</fullName>
+                <default>false</default>
+                <label>Date</label>
+            </value>
+            <value>
+                <fullName>DateTime</fullName>
+                <default>false</default>
+                <label>Date/Time</label>
+            </value>
+            <value>
+                <fullName>Text</fullName>
+                <default>false</default>
+                <label>Text</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <inlineHelpText
+  >Set this to the formula's actual return type to skip type probing and save FormulaEval calls in bulk runs. Leave as Auto if unsure — Auto still works, it just costs more calls on the first evaluation. Only applies to Record formula comparison values and list-check "value to test" formulas.</inlineHelpText>
+    <required>false</required>
+</CustomField>

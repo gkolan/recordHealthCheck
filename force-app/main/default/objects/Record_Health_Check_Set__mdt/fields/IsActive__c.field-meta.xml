@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IsActive__c</fullName>
+    <label>Active</label>
+    <description
+  >When unchecked, the entire Check Set is disabled without deleting metadata. No checks load or run.</description>
+    <type>Checkbox</type>
+    <defaultValue>true</defaultValue>
+    <inlineHelpText
+  >Uncheck to disable this Check Set without deleting it. The component will show a Health Check Unavailable message.</inlineHelpText>
+</CustomField>

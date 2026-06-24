@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+  xmlns="http://soap.sforce.com/2006/04/metadata"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>CTQ - ERB UnableToEvaluate</label>
+    <protected>false</protected>
+    <values>
+        <field>Record_Health_Check_Set__c</field>
+        <value xsi:type="xsd:string">Account_Compare_Queries</value>
+    </values>
+    <values>
+        <field>CheckName__c</field>
+        <value xsi:type="xsd:string">Partner Contact Cities Overlap</value>
+    </values>
+    <values>
+        <field>Tooltip__c</field>
+        <value
+      xsi:type="xsd:string"
+    >CompareTwoQueries EmptyResultBehavior=UnableToEvaluate: when either query returns no rows the list comparison cannot run and returns UNABLE_TO_EVALUATE. Demonstrates the fourth empty-result option on the dual evaluator.</value>
+    </values>
+    <values>
+        <field>CheckMethod__c</field>
+        <value xsi:type="xsd:string">CompareTwoQueries</value>
+    </values>
+    <values>
+        <field>DataQuery__c</field>
+        <value
+      xsi:type="xsd:string"
+    >SELECT MailingCity FROM Contact WHERE AccountId = {!ParentId} AND MailingCity != null</value>
+    </values>
+    <values>
+        <field>FieldToRead__c</field>
+        <value xsi:type="xsd:string">MailingCity</value>
+    </values>
+    <values>
+        <field>CompareToQuery__c</field>
+        <value
+      xsi:type="xsd:string"
+    >SELECT MailingCity FROM Contact WHERE AccountId = {!Id} AND MailingCity != null</value>
+    </values>
+    <values>
+        <field>CompareToField__c</field>
+        <value xsi:type="xsd:string">MailingCity</value>
+    </values>
+    <values>
+        <field>WhenMultipleRows__c</field>
+        <value xsi:type="xsd:string">CompareAsLists</value>
+    </values>
+    <values>
+        <field>Operator__c</field>
+        <value xsi:type="xsd:string">ListsOverlap</value>
+    </values>
+    <values>
+        <field>WhenZeroRows__c</field>
+        <value xsi:type="xsd:string">UnableToEvaluate</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">Info</value>
+    </values>
+    <values>
+        <field>MessageWhenFailed__c</field>
+        <value
+      xsi:type="xsd:string"
+    >{!Name} contact cities do not overlap with the parent account contact cities.</value>
+    </values>
+    <values>
+        <field>MessageWhenCannotRun__c</field>
+        <value
+      xsi:type="xsd:string"
+    >{!Name} has no contact cities to compare against the parent account.</value>
+    </values>
+    <values>
+        <field>RunThisCheckWhen__c</field>
+        <value xsi:type="xsd:string">SOQL</value>
+    </values>
+    <values>
+        <field>RunWhenCountQuery__c</field>
+        <value
+      xsi:type="xsd:string"
+    >SELECT COUNT() FROM Account WHERE Id = {!ParentId}</value>
+    </values>
+    <values>
+        <field>CountOperator__c</field>
+        <value xsi:type="xsd:string">GreaterThan</value>
+    </values>
+    <values>
+        <field>CountThreshold__c</field>
+        <value xsi:type="xsd:double">0</value>
+    </values>
+    <values>
+        <field>RunOrder__c</field>
+        <value xsi:type="xsd:double">95</value>
+    </values>
+    <values>
+        <field>IsActive__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

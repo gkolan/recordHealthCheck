@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+  xmlns="http://soap.sforce.com/2006/04/metadata"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>Account Advanced Checks</label>
+    <protected>false</protected>
+    <values>
+        <field>ObjectApiName__c</field>
+        <value xsi:type="xsd:string">Account</value>
+    </values>
+    <values>
+        <field>PanelHeading__c</field>
+        <value xsi:type="xsd:string">Account Advanced Health Checks</value>
+    </values>
+    <values>
+        <field>PanelSubheading__c</field>
+        <value
+      xsi:type="xsd:string"
+    >Advanced evaluator patterns: Formula and SOQL applicability gates, dependency chains, AnyRowPasses and AllRowsPass with RecordFormula comparison, and ListContainsAny with a formula-resolved primary value.</value>
+    </values>
+    <values>
+        <field>RunChecksWhen__c</field>
+        <value xsi:type="xsd:string">Manual</value>
+    </values>
+    <values>
+        <field>RowAppearance__c</field>
+        <value xsi:type="xsd:string">OneAtATime</value>
+    </values>
+    <values>
+        <field>PassedChecksDisplay__c</field>
+        <value xsi:type="xsd:string">Show</value>
+    </values>
+    <values>
+        <field>SkippedChecksDisplay__c</field>
+        <value xsi:type="xsd:string">Hide</value>
+    </values>
+    <values>
+        <field>StopOnSystemError__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>IsActive__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

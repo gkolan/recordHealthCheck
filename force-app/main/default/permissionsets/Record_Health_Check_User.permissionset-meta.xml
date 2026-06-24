@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Record Health Check User</label>
+    <description
+  >Least-privilege access to run Record Health Checks from the Lightning component. Grants Apex access to the controller and facade entry points only. Assign to any user who should see/run the component. Does NOT grant access to the metrics log object.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <classAccesses>
+        <apexClass>RecordHealthCheckController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>RecordHealthCheck</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+</PermissionSet>

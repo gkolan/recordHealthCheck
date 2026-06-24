@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!-- Sample Check Set Account_Everyday_Use_Cases and its Rules. Requires package-core.xml deployed first. -->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members
+    >Record_Health_Check_Set__mdt.Account_Everyday_Use_Cases</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_EU_AccountPhoneIsSet</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_EU_AllContactsHaveEmail</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_EU_AllContactsHavePhone</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_EU_AllContactsHaveTitle</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_EU_AtLeastOneContactHasEmail</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_EU_HasAtLeastOneContact</members>
+        <members>Record_Health_Check_Rule__mdt.Account_EU_NoOpenCases</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_EU_NoOverdueOpenTasks</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_EU_NoPastDueOpenOpps</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_EU_NoUnreachableContacts</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_EU_OpenOppsFutureClose</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_EU_OwnerIsActive</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_EU_PhoneWellFormed</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_EU_RecentAccountActivity</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_EU_ShippingAddressComplete</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_EU_WebsiteValidUrl</members>
+        <name>CustomMetadata</name>
+    </types>
+    <version>66.0</version>
+</Package>

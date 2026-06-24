@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tooltip__c</fullName>
+    <label>Tooltip</label>
+    <description
+  >Optional. Extra context shown as a tooltip when the user hovers over (or focuses) the check name. It is not shown inline on the row.</description>
+    <type>LongTextArea</type>
+    <length>32768</length>
+    <visibleLines>3</visibleLines>
+        <inlineHelpText
+  >Optional. Appears as a hover tooltip on the check name to explain what the check looks at.</inlineHelpText>
+    <required>false</required>
+</CustomField>

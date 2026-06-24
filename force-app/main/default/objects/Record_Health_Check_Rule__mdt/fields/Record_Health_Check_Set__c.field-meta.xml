@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Record_Health_Check_Set__c</fullName>
+    <label>Check Set</label>
+    <description
+  >Parent Check Set this rule belongs to. A rule must belong to exactly one Check Set.</description>
+    <type>MetadataRelationship</type>
+    <relationshipName>Record_Health_Check_Rules</relationshipName>
+    <referenceTo>Record_Health_Check_Set__mdt</referenceTo>
+        <inlineHelpText
+  >The parent Check Set this rule belongs to. Required on every rule.</inlineHelpText>
+    <required>true</required>
+</CustomField>

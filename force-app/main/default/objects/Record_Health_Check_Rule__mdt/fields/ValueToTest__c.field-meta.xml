@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ValueToTest__c</fullName>
+    <label>Value To Test (List Checks)</label>
+    <description
+  >Required for a Single query check using the "List includes any of" / "List excludes all of" operators: enter the formula that returns the scalar field value to test against the list from the Comparison Query (e.g. BillingCountry). Leave blank for every other Check Method.</description>
+    <type>LongTextArea</type>
+    <length>32768</length>
+    <visibleLines>5</visibleLines>
+        <inlineHelpText
+  >List checks only ("List includes any of" / "List excludes all of"). Return the single field value to test against the Comparison Query list, e.g. BillingCountry. Leave blank for record-formula and all other query checks.</inlineHelpText>
+    <required>false</required>
+</CustomField>

@@ -1,0 +1,191 @@
+<template>
+  <template if:true={hasComponentError}>
+    <div class="rhc-error-banner" role="alert" aria-live="assertive">
+      <lightning-icon
+        icon-name={errorBannerIcon}
+        size="x-small"
+        variant="error"
+        alternative-text={errorBannerIconAltText}
+      ></lightning-icon>
+      <div class="rhc-error-banner__body">
+        <span class="rhc-error-banner__title">{errorBannerTitle}</span>
+        <span class="rhc-error-banner__msg">{componentError}</span>
+        <template if:true={isSetupError}>
+          <span class="rhc-error-banner__hint">
+            To find valid values, go to Setup &rarr; Custom Metadata Types
+            &rarr;
+            <strong>Record Health Check Set</strong> &rarr; Manage Records, and
+            copy the Developer Name of the set you want to use.
+          </span>
+        </template>
+      </div>
+    </div>
+  </template>
+
+  <template if:false={hasComponentError}>
+    <article class="rhc-card">
+      <div class="rhc-body">
+        <div class="rhc-header">
+          <div class="rhc-header__bar">
+            <div class="rhc-header__main">
+              <h2 class="rhc-header__title">{displayTitle}</h2>
+            </div>
+
+            <p aria-live="polite" class="slds-assistive-text">
+              Completed Checks: {completedCheckCount} / {totalCheckCount}
+            </p>
+
+            <div class="rhc-header__actions">
+              <template if:true={isLoading}>
+                <lightning-spinner
+                  alternative-text="Loading health checks"
+                  size="small"
+                ></lightning-spinner>
+              </template>
+              <template if:false={isLoading}>
+                <template if:true={showActionButton}>
+                  <button
+                    class="slds-button slds-button_neutral rhc-action-button"
+                    onclick={handleAction}
+                    title={actionTitle}
+                    aria-label={actionButtonAriaLabel}
+                    aria-busy={actionButtonBusy}
+                    disabled={actionButtonDisabled}
+                  >
+                    {actionButtonLabel}
+                    <span class="rhc-action-button__glyph" aria-hidden="true">
+                      <template if:true={actionButtonBusy}>
+                        <span class="rhc-action-button__spinner"></span>
+                      </template>
+                      <template if:false={actionButtonBusy}>
+                        <span class="rhc-action-button__play"></span>
+                      </template>
+                    </span>
+                  </button>
+                </template>
+                <template if:true={showLimitNotice}>
+                  <lightning-badge
+                    class="rhc-check-pill rhc-check-pill--warn"
+                    label="First 25 shown"
+                    title="This Check Set has more than 25 active rules. Only the first 25 by Priority, then DeveloperName, are included in this run."
+                  ></lightning-badge>
+                </template>
+              </template>
+            </div>
+          </div>
+
+          <template if:true={displayDescription}>
+            <p class="rhc-header__desc">{displayDescription}</p>
+          </template>
+        </div>
+
+        <template if:true={showPreRunHint}>
+          <p class="rhc-pre-run-hint" role="status">
+            Click <strong>Run</strong> to evaluate this record against
+            {checkCountPhrase}.
+          </p>
+        </template>
+
+        <ul class="rhc-list" role="list">
+          <template for:each={visibleChecks} for:item="check">
+            <li
+              key={check.developerName}
+              class={check.rowClass}
+              aria-label={check.accessibleLabel}
+              data-tooltip={check.description}
+              tabindex={check.tabIndex}
+            >
+              <template if:true={check.showRowAccent}>
+                <span class={check.rowAccentClass} aria-hidden="true"></span>
+              </template>
+              <div class="rhc-row__icon" aria-hidden="true">
+                <template if:true={check.isPending}>
+                  <div class="rhc-dot rhc-dot--pending"></div>
+                </template>
+                <template if:true={check.isLoading}>
+                  <!-- AUDIT (LWC-11): parent .rhc-row__icon is aria-hidden; empty alt avoids duplicate "Evaluating". -->
+                  <lightning-spinner
+                    alternative-text=""
+                    size="x-small"
+                  ></lightning-spinner>
+                </template>
+                <template if:true={check.isResolved}>
+                  <span class={check.statusIconClass}></span>
+                </template>
+              </div>
+
+              <div class="rhc-row__content">
+                <div class="rhc-row__heading">
+                  <span class="rhc-row__label">{check.label}</span>
+                  <template if:true={check.isResolved}>
+                    <span class="slds-assistive-text" role="status">
+                      Status: {check.statusLabel}
+                    </span>
+                  </template>
+                </div>
+                <template if:true={check.showMessage}>
+                  <span class={check.messageClass}>{check.result.message}</span>
+                </template>
+                <template if:true={check.showComparison}>
+                  <span class="rhc-row__comparison">
+                    <template if:true={check.showActual}>
+                      <span class="rhc-cmp__pair">
+                        <span class="rhc-cmp__key">Found</span>
+                        <span class="rhc-cmp__val">{check.actualValue}</span>
+                      </span>
+                    </template>
+                    <template if:true={check.showExpected}>
+                      <span class="rhc-cmp__pair">
+                        <span class="rhc-cmp__key">Expected</span>
+                        <span class="rhc-cmp__val">{check.expectedValue}</span>
+                      </span>
+                    </template>
+                  </span>
+                </template>
+                <template if:true={check.showDebugMeta}>
+                  <span class="rhc-debug-meta">{check.debugMeta}</span>
+                </template>
+                <template if:true={check.showAdminDetail}>
+                  <details class="rhc-debug-detail">
+                    <summary class="rhc-debug-detail__summary">
+                      Debug detail
+                    </summary>
+                    <pre class="rhc-debug-detail__body">
+{check.adminDetailMessage}</pre
+                    >
+                  </details>
+                </template>
+              </div>
+            </li>
+          </template>
+        </ul>
+
+        <template if:true={showSummaryStats}>
+          <div class="rhc-stats-bar">
+            <template for:each={summaryStats} for:item="stat">
+              <span key={stat.key} class="rhc-summary-pill">
+                <span
+                  class={stat.cssClass}
+                  data-tooltip={stat.tooltip}
+                  tabindex="0"
+                >
+                  <span class={stat.iconClass} aria-hidden="true"></span>
+                  {stat.label}
+                </span>
+                <span class="rhc-stat__nubbin-host" aria-hidden="true">
+                  <span class="rhc-stat__nubbin"></span>
+                </span>
+              </span>
+            </template>
+          </div>
+        </template>
+
+        <template if:true={showDebugConsoleHint}>
+          <p class="rhc-debug-console-hint" role="status">
+            Check console (F12) for diagnostics.
+          </p>
+        </template>
+      </div>
+    </article>
+  </template>
+</template>

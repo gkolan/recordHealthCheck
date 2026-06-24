@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PassFailFormula__c</fullName>
+    <label>Pass/Fail Formula</label>
+    <description
+  >Salesforce formula syntax for Record formula checks only - return true (pass) or false (fail), e.g. NOT(ISBLANK(BillingCity)). For Single query list checks ("List includes any of" / "List excludes all of"), use Value To Test (List Checks) instead. Not used for any other Check Method.</description>
+    <type>LongTextArea</type>
+    <length>32768</length>
+    <visibleLines>5</visibleLines>
+        <inlineHelpText
+  >Record formula checks: return true/false (e.g. NOT(ISBLANK(BillingCity))). For list checks ("List includes any of"/"List excludes all of"), use Value To Test (List Checks) instead.</inlineHelpText>
+    <required>false</required>
+</CustomField>

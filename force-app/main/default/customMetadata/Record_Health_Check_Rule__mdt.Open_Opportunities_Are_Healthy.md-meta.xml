@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+  xmlns="http://soap.sforce.com/2006/04/metadata"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>Ex - Open Opportunities Are Healthy</label>
+    <protected>false</protected>
+    <values>
+        <field>Record_Health_Check_Set__c</field>
+        <value xsi:type="xsd:string">Account_Examples_Apex</value>
+    </values>
+    <values>
+        <field>RunOrder__c</field>
+        <value xsi:type="xsd:double">20</value>
+    </values>
+    <values>
+        <field>IsActive__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>CheckName__c</field>
+        <value xsi:type="xsd:string">Open Opportunities Are Healthy</value>
+    </values>
+    <values>
+        <field>CheckMethod__c</field>
+        <value xsi:type="xsd:string">Apex</value>
+    </values>
+    <values>
+        <field>ApexClass__c</field>
+        <value xsi:type="xsd:string">AccountOpenOpportunityHealthCheck</value>
+    </values>
+    <values>
+        <field>ApexSettingsJson__c</field>
+        <value xsi:type="xsd:string">{"staleDays": 30}</value>
+    </values>
+    <values>
+        <field>RunThisCheckWhen__c</field>
+        <value xsi:type="xsd:string">SOQL</value>
+    </values>
+    <values>
+        <field>RunWhenCountQuery__c</field>
+        <value
+      xsi:type="xsd:string"
+    >SELECT COUNT() FROM Opportunity WHERE AccountId = {!Id} AND IsClosed = false</value>
+    </values>
+    <values>
+        <field>CountOperator__c</field>
+        <value xsi:type="xsd:string">GreaterThan</value>
+    </values>
+    <values>
+        <field>CountThreshold__c</field>
+        <value xsi:type="xsd:string">0</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string">Error</value>
+    </values>
+    <values>
+        <field>MessageWhenFailed__c</field>
+        <value
+      xsi:type="xsd:string"
+    >One or more open opportunities are stale, missing a Next Step, or have no close date this quarter.</value>
+    </values>
+</CustomMetadata>

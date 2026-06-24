@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RecordFormulaValue__c</fullName>
+    <label>Record Formula Value</label>
+    <description
+  >A Salesforce formula that produces the value to compare against, based on the current record. Used only when Compare Against is "A formula on the record". Formula syntax only — not Apex or SOQL.</description>
+    <type>LongTextArea</type>
+    <length>32768</length>
+    <visibleLines>5</visibleLines>
+        <inlineHelpText
+  >Salesforce formula giving the value to compare against, e.g. BillingCity or AnnualRevenue / 10. Used when Compare Against is "A formula on the record".</inlineHelpText>
+    <required>false</required>
+</CustomField>

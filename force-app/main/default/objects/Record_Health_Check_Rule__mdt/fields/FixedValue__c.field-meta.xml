@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FixedValue__c</fullName>
+    <label>Fixed Value</label>
+    <description
+  >The fixed value to compare against. Used only when Compare Against is "A fixed value".</description>
+    <type>Text</type>
+    <length>255</length>
+        <inlineHelpText
+  >The value to compare against, e.g. 1, Approved, or San Francisco. Only used when Compare Against is "A fixed value".</inlineHelpText>
+    <required>false</required>
+    <unique>false</unique>
+    <externalId>false</externalId>
+</CustomField>

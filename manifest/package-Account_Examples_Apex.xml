@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!-- Sample Check Set Account_Examples_Apex and its Rules. Requires package-core.xml deployed first. -->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Record_Health_Check_Set__mdt.Account_Examples_Apex</members>
+        <members>Record_Health_Check_Rule__mdt.Has_Recent_Activity</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Open_Opportunities_Are_Healthy</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Strategic_Account_Is_Ready</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Approval_No_Inactive_Approvers</members>
+        <name>CustomMetadata</name>
+    </types>
+    <types>
+        <members>AccountStrategicReadinessCheck</members>
+        <members>AccountStrategicReadinessCheckTest</members>
+        <members>ApprovalInactiveApproverCheck</members>
+        <members>ApprovalInactiveApproverCheckTest</members>
+        <name>ApexClass</name>
+    </types>
+    <version>66.0</version>
+</Package>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CompareToQuery__c</fullName>
+    <label>Compare-To Query</label>
+    <description
+  >The second SOQL query. Used when Compare Against is "Another query", or for a Compare two queries check. Supports merge tokens like {!Id} and {!FieldApiName}.</description>
+    <type>LongTextArea</type>
+    <length>32768</length>
+    <visibleLines>5</visibleLines>
+        <inlineHelpText
+  >The second SOQL query, for "Another query" comparisons or Compare two queries checks.</inlineHelpText>
+    <required>false</required>
+</CustomField>

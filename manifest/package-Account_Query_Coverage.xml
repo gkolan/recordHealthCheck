@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!-- Sample Check Set Account_Query_Coverage and its Rules. Requires package-core.xml deployed first. -->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Record_Health_Check_Set__mdt.Account_Query_Coverage</members>
+        <members>Record_Health_Check_Rule__mdt.Account_QC_Contains</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_QC_DoesNotContain</members>
+        <members>Record_Health_Check_Rule__mdt.Account_QC_ERB_Fail</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_QC_ERB_Pass_NullNoMatch</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_QC_ERB_UnableToEvaluate</members>
+        <members>Record_Health_Check_Rule__mdt.Account_QC_Equals</members>
+        <members>Record_Health_Check_Rule__mdt.Account_QC_GreaterThan</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_QC_GreaterThanOrEqual</members>
+        <members>Record_Health_Check_Rule__mdt.Account_QC_IsBlank</members>
+        <members>Record_Health_Check_Rule__mdt.Account_QC_IsNotBlank</members>
+        <members>Record_Health_Check_Rule__mdt.Account_QC_LessThan</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_QC_LessThanOrEqual</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_QC_ListContainsAny</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_QC_ListDoesNotContainAny</members>
+        <members>Record_Health_Check_Rule__mdt.Account_QC_NotEquals</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Account_QC_NullBehavior_TreatAsBlank</members>
+        <members>Record_Health_Check_Rule__mdt.Account_QC_QueryResult</members>
+        <name>CustomMetadata</name>
+    </types>
+    <version>66.0</version>
+</Package>

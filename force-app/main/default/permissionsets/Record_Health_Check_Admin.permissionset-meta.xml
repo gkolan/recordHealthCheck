@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Record Health Check Admin</label>
+    <description
+  >Configure Record Health Check, run the validator, and debug detail (Record_Health_Check_Debug). For administrators maintaining Check Sets and Rules.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>Record_Health_Check_Debug</name>
+    </customPermissions>
+    <classAccesses>
+        <apexClass>RecordHealthCheckController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>RecordHealthCheck</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>RecordHealthCheckMetadataValidator</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+</PermissionSet>

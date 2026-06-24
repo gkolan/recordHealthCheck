@@ -1,0 +1,37 @@
+name: Feature request
+description: Suggest a new check type, field, or capability
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Record Health Check is **advisory** — it reports on records, it does not block
+        saves or write data. Requests for save-time enforcement are out of scope (use a
+        validation rule or Flow). See the [Design Specification §1–3](../blob/main/docs/record-health-check-design-spec.md).
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What are you trying to accomplish that you cannot today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What new check type, metadata field, or behavior would solve it?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Existing patterns you tried (a Query check, applicability gate, dependency, custom Apex check).
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: This keeps the component advisory (it does not block saves or write records).
+          required: true

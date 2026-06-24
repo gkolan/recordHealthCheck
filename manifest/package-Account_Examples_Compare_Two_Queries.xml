@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!-- Sample Check Set Account_Examples_Compare_Two_Queries and its Rules. Requires package-core.xml deployed first. -->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members
+    >Record_Health_Check_Set__mdt.Account_Examples_Compare_Two_Queries</members>
+        <members>Record_Health_Check_Rule__mdt.Ex_CTQ_ListContainsAll</members>
+        <members>Record_Health_Check_Rule__mdt.Ex_CTQ_ExactListMatch</members>
+        <members>Record_Health_Check_Rule__mdt.Ex_CTQ_ListsOverlap</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Ex_CTQ_ContactVsOppCount</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Oldest_Contact_City_Matches_Billing_City</members>
+        <members
+    >Record_Health_Check_Rule__mdt.Open_Pipeline_Covers_Annual_Revenue</members>
+        <name>CustomMetadata</name>
+    </types>
+    <version>66.0</version>
+</Package>

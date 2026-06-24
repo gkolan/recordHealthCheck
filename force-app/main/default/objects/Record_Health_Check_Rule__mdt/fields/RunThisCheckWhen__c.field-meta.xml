@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RunThisCheckWhen__c</fullName>
+    <label>Run This Check When</label>
+    <description
+  >Decides whether this check applies to the current record before it runs. Always runs it every time. Otherwise you can gate it on a formula or on a record count. When the gate is not met, the check is marked Skipped.</description>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Always</fullName>
+                <default>true</default>
+                <label>Always</label>
+            </value>
+            <value>
+                <fullName>Formula</fullName>
+                <default>false</default>
+                <label>Only when a formula is true</label>
+            </value>
+            <value>
+                <fullName>SOQL</fullName>
+                <default>false</default>
+                <label>Only when a count query matches</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+        <inlineHelpText
+  >Always = run on every record. Only when a formula is true = gate on Run When Formula Is True. Only when a count query matches = gate on Run When Count Query Matches. If the gate is not met, the check is Skipped.</inlineHelpText>
+    <required>true</required>
+</CustomField>

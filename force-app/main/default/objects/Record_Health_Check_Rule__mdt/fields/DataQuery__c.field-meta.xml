@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DataQuery__c</fullName>
+    <label>Data Query</label>
+    <description
+  >The SOQL that fetches what you are checking. Use merge tokens like {!Id} or {!AccountNumber} to insert values from the current record. Leave blank only when using the List includes any of / List excludes all of operators (use Pass/Fail Formula instead).</description>
+    <type>LongTextArea</type>
+    <length>32768</length>
+    <visibleLines>5</visibleLines>
+        <inlineHelpText
+  >SOQL that returns the data to check. Insert record values with {!Id}, {!FieldApiName}, etc. Use COUNT() for "how many" checks.</inlineHelpText>
+    <required>false</required>
+</CustomField>

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or discussion
+    url: https://github.com/gkolan/recordHealthCheck/discussions
+    about: Ask how to configure a check, or discuss an idea before filing an issue.
+  - name: Security vulnerability
+    url: https://github.com/gkolan/recordHealthCheck/security/advisories/new
+    about: Report a vulnerability privately. Do not open a public issue.
+  - name: Documentation
+    url: https://github.com/gkolan/recordHealthCheck/tree/main/docs/examples/index.md
+    about: Installation, admin, and design docs — many questions are answered here.

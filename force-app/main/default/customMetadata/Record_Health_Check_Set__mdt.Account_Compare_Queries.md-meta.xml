@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+  xmlns="http://soap.sforce.com/2006/04/metadata"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>Account Compare Two Queries</label>
+    <protected>false</protected>
+    <values>
+        <field>ObjectApiName__c</field>
+        <value xsi:type="xsd:string">Account</value>
+    </values>
+    <values>
+        <field>PanelHeading__c</field>
+        <value xsi:type="xsd:string">Account Compare Two Queries</value>
+    </values>
+    <values>
+        <field>PanelSubheading__c</field>
+        <value
+      xsi:type="xsd:string"
+    >CompareTwoQueries evaluator: scalar and aggregate comparisons (COUNT, COUNT DISTINCT, SUM, AVG, MIN, MAX) plus list-vs-list set comparisons using ListsOverlap, ListContainsAll, and ExactListMatch.</value>
+    </values>
+    <values>
+        <field>RunChecksWhen__c</field>
+        <value xsi:type="xsd:string">Manual</value>
+    </values>
+    <values>
+        <field>RowAppearance__c</field>
+        <value xsi:type="xsd:string">AllAtOnce</value>
+    </values>
+    <values>
+        <field>PassedChecksDisplay__c</field>
+        <value xsi:type="xsd:string">Show</value>
+    </values>
+    <values>
+        <field>SkippedChecksDisplay__c</field>
+        <value xsi:type="xsd:string">Hide</value>
+    </values>
+    <values>
+        <field>StopOnSystemError__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>IsActive__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

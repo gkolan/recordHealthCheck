@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RunWhenCountQuery__c</fullName>
+    <label>Run When Count Query Matches</label>
+    <description
+  >A COUNT() SOQL query used only to decide if this check applies. Its count is compared using Applicability Count Comparison and Applicability Count Threshold. Required when "Run This Check When" is "Only when a count query matches".</description>
+    <type>LongTextArea</type>
+    <length>32768</length>
+    <visibleLines>5</visibleLines>
+        <inlineHelpText
+  >A COUNT() query, e.g. SELECT COUNT() FROM Contract WHERE AccountId = {!Id} AND Status = 'Active'. Compared using Applicability Count Comparison and Applicability Count Threshold.</inlineHelpText>
+    <required>false</required>
+</CustomField>

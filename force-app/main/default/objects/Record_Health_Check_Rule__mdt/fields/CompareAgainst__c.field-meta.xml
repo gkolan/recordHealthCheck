@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CompareAgainst__c</fullName>
+    <label>Compare Against</label>
+    <description
+  >For Single query checks, this says where the right-hand value comes from: a fixed value you type, a formula on the record, or a second query.</description>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>FixedValue</fullName>
+                <default>false</default>
+                <label>A fixed value</label>
+            </value>
+            <value>
+                <fullName>RecordFormula</fullName>
+                <default>false</default>
+                <label>A formula on the record</label>
+            </value>
+            <value>
+                <fullName>AnotherQuery</fullName>
+                <default>false</default>
+                <label>Another query</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+        <inlineHelpText
+  >A fixed value = type it in Fixed Value. A formula on the record = enter it in Record Formula Value. Another query = enter it in Compare-To Query.</inlineHelpText>
+    <required>false</required>
+</CustomField>

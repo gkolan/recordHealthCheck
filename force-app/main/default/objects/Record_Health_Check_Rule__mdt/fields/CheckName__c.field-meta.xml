@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CheckName__c</fullName>
+    <label>Check Name</label>
+    <description
+  >The name end users see for this check in the panel row. This is the friendly title, not the DeveloperName.</description>
+    <type>Text</type>
+    <length>255</length>
+        <inlineHelpText
+  >The title users see for this check, e.g. "Billing City Present". Keep it short and plain-language.</inlineHelpText>
+    <required>true</required>
+    <unique>false</unique>
+    <externalId>false</externalId>
+</CustomField>

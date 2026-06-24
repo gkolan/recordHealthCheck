@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ObjectApiName__c</fullName>
+    <label>Object API Name</label>
+    <description
+  >The API name of the object this Check Set runs on. It must match the object of the record page where you place the component. Example: Account, Opportunity, or a custom object like SBQQ__Quote__c.</description>
+    <type>Text</type>
+    <length>255</length>
+        <inlineHelpText
+  >Type the object's API name, e.g. Account or Opportunity. It must match the record page exactly, or the component shows nothing.</inlineHelpText>
+    <required>true</required>
+    <unique>false</unique>
+    <externalId>false</externalId>
+</CustomField>

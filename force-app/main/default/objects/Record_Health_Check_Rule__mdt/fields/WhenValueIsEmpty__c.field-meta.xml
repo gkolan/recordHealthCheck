@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>WhenValueIsEmpty__c</fullName>
+    <label>If A Value Is Empty</label>
+    <description
+  >How to handle empty (null) field values while comparing rows. Applies to Single query and Compare two queries checks. Ignored for Record formula and Custom Apex checks and for pure aggregate queries.</description>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>SkipRecordsWithMissingValue</fullName>
+                <default>true</default>
+                <label>Ignore rows with empty values</label>
+            </value>
+            <value>
+                <fullName>TreatMissingAsBlank</fullName>
+                <default>false</default>
+                <label>Treat empty as blank</label>
+            </value>
+            <value>
+                <fullName>MissingMeansNoMatch</fullName>
+                <default>false</default>
+                <label>Empty never matches</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+        <inlineHelpText
+  >Ignore rows with empty values (default) = leave them out of the comparison. Treat empty as blank = compare an empty value as "" (e.g. empty Equals "" passes). Empty never matches = an empty value always fails the comparison (e.g. empty Equals "" fails).</inlineHelpText>
+    <required>false</required>
+</CustomField>
