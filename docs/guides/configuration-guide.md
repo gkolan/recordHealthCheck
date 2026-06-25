@@ -113,6 +113,35 @@ PassFailFormula__c: OR(NOT(ISBLANK(Phone)), NOT(ISBLANK(Website)))
 MessageWhenFailed__c: {!Name} needs either a Phone or Website.
 ```
 
+### Formula operands can be formula or roll-up fields
+
+`PassFailFormula__c` (and the optional formulas below) may reference **calculated fields** — formula fields, roll-up summaries, and even formulas of formulas — at any depth, for any type (number, text, date, boolean, picklist) and any standard function. The engine loads the whole dependency chain, so you reference the field API names you use in Setup; you do **not** rewrite checks to point at the underlying source fields.
+
+### Showing Found vs Expected (optional)
+
+By default a Formula check shows only **Expected** — the quoted formula text — and no **Found** value. For balance and comparison checks you can declare two optional scalar formulas so the row shows readable numbers (or text/dates) on each side, like a Query check:
+
+| Field | Purpose |
+| ----- | ------- |
+| `FoundValueFormula__c` | Scalar formula → **Found** (left side — what the record has). |
+| `ExpectedValueFormula__c` | Scalar formula → **Expected** (right side — what it should have). |
+
+`PassFailFormula__c` still decides pass/fail (it must return Boolean); these two are display-only and additive.
+
+```text
+PassFailFormula__c:      BLANKVALUE(Debit_Total__c, 0) = BLANKVALUE(Credit_Total__c, 0)
+FoundValueFormula__c:    BLANKVALUE(Debit_Total__c, 0)
+ExpectedValueFormula__c: BLANKVALUE(Credit_Total__c, 0)
+```
+
+On a failing row this renders **Found "100"** / **Expected "75"** instead of echoing the formula.
+
+- **When to use boolean-only:** the formula is a simple presence/condition check (`NOT(ISBLANK(...))`, `ISPICKVAL(...)`) where echoing the condition as Expected is enough.
+- **When to add Found/Expected:** the formula compares two values (balance, threshold, equality, date) and seeing both sides is more actionable than the formula text.
+- Leave both blank to keep the original behavior (Expected = quoted `PassFailFormula__c`, no Found).
+- If a Found/Expected formula can't be resolved, the row silently falls back to the default display — it never changes pass/fail.
+- Set **Scalar Formula Return Type** to the formulas' type (e.g. Number) to save FormulaEval calls in bulk/Flow runs; leave Auto if unsure.
+
 ## 7. Query Rules
 
 Use Query when one SOQL result is the primary value.

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ExpectedValueFormula__c</fullName>
+    <label>Expected Value Formula</label>
+    <description
+  >Optional, Record formula checks only. A scalar formula whose result is shown as the "Expected" value on the result row (the right side of a comparison — what the record should have had). Leave blank to keep the default behavior (Expected shows the quoted Pass/Fail Formula text). The Pass/Fail Formula still decides pass/fail. Example: BLANKVALUE(Credit_Total__c, 0) - BLANKVALUE(Adjustment__c, 0).</description>
+    <type>LongTextArea</type>
+    <length>32768</length>
+    <visibleLines>3</visibleLines>
+        <inlineHelpText
+  >Optional. Scalar formula shown as "Expected" on the row (e.g. BLANKVALUE(Credit_Total__c, 0)). Pass/Fail is still decided by the Pass/Fail Formula. Blank = Expected shows the formula text.</inlineHelpText>
+    <required>false</required>
+</CustomField>

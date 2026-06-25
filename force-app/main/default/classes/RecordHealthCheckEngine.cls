@@ -768,6 +768,11 @@ public with sharing class RecordHealthCheckEngine {
 
     if (rule.CheckMethod__c == 'Formula') {
       addFormulaFields(fields, objectType, rule.PassFailFormula__c);
+      // Optional Found / Expected scalar formulas get the SAME calculated-field
+      // dependency expansion as the pass/fail formula, so a balance check whose
+      // operands are formula fields can display resolved numbers instead of UNABLE.
+      addFormulaFields(fields, objectType, rule.FoundValueFormula__c);
+      addFormulaFields(fields, objectType, rule.ExpectedValueFormula__c);
     }
     if (rule.CheckMethod__c == 'Query') {
       // List checks read the scalar from ValueToTest__c; RecordFormula compares to RecordFormulaValue__c.

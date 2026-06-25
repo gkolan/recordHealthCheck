@@ -386,6 +386,8 @@ public with sharing class RecordHealthCheckConfigService {
         CheckMethod__c,
         Severity__c,
         PassFailFormula__c,
+        FoundValueFormula__c,
+        ExpectedValueFormula__c,
         ValueToTest__c,
         ScalarFormulaReturnType__c,
         DataQuery__c,

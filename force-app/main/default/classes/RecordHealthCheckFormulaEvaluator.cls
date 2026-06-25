@@ -105,15 +105,13 @@ public with sharing class RecordHealthCheckFormulaEvaluator {
       result.detailMessage = 'Formula returned null. The formula may reference a null relationship or an inaccessible field.';
     } else if (evalResult instanceof Boolean) {
       Boolean passed = (Boolean) evalResult;
-      // A Formula check has no separable record value vs operand — the condition
-      // lives inside the expression. Surface the formula as the expected
-      // condition so the row still shows what was required (actualValue stays
-      // null; the UI renders only the expected side). Route it through
-      // formatValue so the expression is quoted like every other expected value
-      // (e.g. Expected "ISBLANK(BillingCity)"), keeping the display uniform.
-      result.expectedValue = RecordHealthCheckComparatorEngine.formatValue(
-        rule.PassFailFormula__c
-      );
+      // Populate Found / Expected for display. By default a Formula check has no
+      // separable record value vs operand — the condition lives inside the
+      // expression — so we echo the formula as the expected condition (quoted via
+      // formatValue, e.g. Expected "ISBLANK(BillingCity)"). When the admin has
+      // declared explicit Found/Expected scalar formulas, those resolved values
+      // replace the echo so a balance check can show readable numbers instead.
+      applyFoundExpectedValues(rule, record, result);
       if (passed) {
         result.status = 'PASS';
       } else {
@@ -129,6 +127,85 @@ public with sharing class RecordHealthCheckFormulaEvaluator {
       result.detailMessage = 'Formula did not return a Boolean value.';
     }
     return result;
+  }
+
+  /**
+   * Sets a Formula check's Found (actualValue) and Expected (expectedValue)
+   * display values.
+   *
+   * - Found: only when FoundValueFormula__c is populated — resolved as a scalar
+   *   and formatted like Query checks. Blank leaves actualValue null (no Found
+   *   chip), matching the original behavior.
+   * - Expected: the resolved ExpectedValueFormula__c scalar when populated,
+   *   otherwise the quoted PassFailFormula__c text (original behavior).
+   *
+   * Display is purely additive: pass/fail has already been decided by the
+   * boolean PassFailFormula__c. A scalar formula that fails to resolve (non-scalar
+   * result, null traversal, FormulaEval budget) must never change the row's
+   * status, so each resolution is isolated and falls back to the default.
+   */
+  @TestVisible
+  private void applyFoundExpectedValues(
+    Record_Health_Check_Rule__mdt rule,
+    SObject record,
+    RecordHealthCheckResult result
+  ) {
+    if (String.isNotBlank(rule.FoundValueFormula__c)) {
+      Object found = resolveScalarForDisplay(
+        rule.FoundValueFormula__c,
+        record,
+        rule.ScalarFormulaReturnType__c
+      );
+      if (found != ABSENT) {
+        result.actualValue = RecordHealthCheckComparatorEngine.formatValue(
+          found
+        );
+      }
+    }
+
+    if (String.isNotBlank(rule.ExpectedValueFormula__c)) {
+      Object expected = resolveScalarForDisplay(
+        rule.ExpectedValueFormula__c,
+        record,
+        rule.ScalarFormulaReturnType__c
+      );
+      if (expected != ABSENT) {
+        result.expectedValue = RecordHealthCheckComparatorEngine.formatValue(
+          expected
+        );
+        return;
+      }
+    }
+
+    // No explicit Expected formula (or it could not resolve): echo the boolean
+    // condition so the row still shows what was required.
+    if (result.expectedValue == null) {
+      result.expectedValue = RecordHealthCheckComparatorEngine.formatValue(
+        rule.PassFailFormula__c
+      );
+    }
+  }
+
+  // Sentinel distinguishing "resolved to null" (a real, displayable blank value)
+  // from "could not resolve" (leave the default in place). A plain null return
+  // would conflate the two.
+  private static final Object ABSENT = new Map<String, Object>();
+
+  /**
+   * Resolves a display-only scalar formula, returning ABSENT (not throwing) when
+   * it cannot be evaluated, so a bad Found/Expected formula degrades to the
+   * default display instead of failing the check.
+   */
+  private Object resolveScalarForDisplay(
+    String formulaExpression,
+    SObject record,
+    String declaredReturnType
+  ) {
+    try {
+      return resolveScalar(formulaExpression, record, declaredReturnType);
+    } catch (Exception ex) {
+      return ABSENT;
+    }
   }
 
   /**

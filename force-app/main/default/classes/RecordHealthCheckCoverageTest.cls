@@ -3911,6 +3911,105 @@ private class RecordHealthCheckCoverageTest {
     return null;
   }
 
+  @IsTest
+  static void formulaCheckPopulatesFoundAndExpectedFromScalarFormulas() {
+    Account a = new Account(Name = 'Balance Co', NumberOfEmployees = 100);
+    insert a;
+    Account record = [
+      SELECT Id, NumberOfEmployees, AnnualRevenue
+      FROM Account
+      WHERE Id = :a.Id
+    ];
+    RecordHealthCheckFormulaEvaluator evaluator = new RecordHealthCheckFormulaEvaluator();
+
+    // Found + Expected resolve from explicit scalar formulas, formatted like
+    // Query checks.
+    Record_Health_Check_Rule__mdt rule = new Record_Health_Check_Rule__mdt(
+      CheckMethod__c = 'Formula',
+      PassFailFormula__c = 'NumberOfEmployees > 0',
+      FoundValueFormula__c = 'BLANKVALUE(NumberOfEmployees, 0)',
+      ExpectedValueFormula__c = 'BLANKVALUE(NumberOfEmployees, 0) + 5',
+      ScalarFormulaReturnType__c = 'Number'
+    );
+    RecordHealthCheckResult result = new RecordHealthCheckResult();
+    evaluator.applyFoundExpectedValues(rule, record, result);
+    System.assert(
+      result.actualValue != null && result.actualValue.contains('100'),
+      'Found should be the resolved left-side scalar: ' + result.actualValue
+    );
+    System.assert(
+      result.expectedValue != null && result.expectedValue.contains('105'),
+      'Expected should be the resolved right-side scalar: ' +
+        result.expectedValue
+    );
+
+    // Blank Found/Expected → original behavior: no Found, Expected echoes the
+    // boolean formula text.
+    Record_Health_Check_Rule__mdt plain = new Record_Health_Check_Rule__mdt(
+      CheckMethod__c = 'Formula',
+      PassFailFormula__c = 'NumberOfEmployees > 0'
+    );
+    RecordHealthCheckResult plainResult = new RecordHealthCheckResult();
+    evaluator.applyFoundExpectedValues(plain, record, plainResult);
+    System.assertEquals(
+      null,
+      plainResult.actualValue,
+      'No Found formula → no Found value'
+    );
+    System.assertEquals(
+      '"NumberOfEmployees > 0"',
+      plainResult.expectedValue,
+      'Expected echoes the quoted Pass/Fail formula when no Expected formula'
+    );
+
+    // An unresolvable Found/Expected formula degrades to the default — it must
+    // never throw or change pass/fail.
+    Record_Health_Check_Rule__mdt bad = new Record_Health_Check_Rule__mdt(
+      CheckMethod__c = 'Formula',
+      PassFailFormula__c = 'NumberOfEmployees > 0',
+      FoundValueFormula__c = 'No_Such_Field__c + 1'
+    );
+    RecordHealthCheckResult badResult = new RecordHealthCheckResult();
+    evaluator.applyFoundExpectedValues(bad, record, badResult);
+    System.assertEquals(
+      null,
+      badResult.actualValue,
+      'Unresolvable Found formula leaves Found empty'
+    );
+    System.assertEquals(
+      '"NumberOfEmployees > 0"',
+      badResult.expectedValue,
+      'Falls back to the formula echo when Expected is blank'
+    );
+
+    // End-to-end: evaluate() wires Found/Expected onto a real PASS result.
+    RecordHealthCheckResult full = evaluator.evaluate(rule, record.Id, record);
+    System.assertEquals('PASS', full.status);
+    System.assert(
+      full.actualValue != null && full.actualValue.contains('100'),
+      'evaluate() should surface Found: ' + full.actualValue
+    );
+
+    // collectRecordFields plans the operands of BOTH new formulas (so Task 2's
+    // dependency expansion applies to them too).
+    Record_Health_Check_Rule__mdt planRule = new Record_Health_Check_Rule__mdt(
+      CheckMethod__c = 'Formula',
+      PassFailFormula__c = 'NumberOfEmployees > 0',
+      FoundValueFormula__c = 'BLANKVALUE(NumberOfEmployees, 0)',
+      ExpectedValueFormula__c = 'BLANKVALUE(AnnualRevenue, 0)'
+    );
+    Set<String> planned = new RecordHealthCheckEngine()
+      .collectRecordFields(planRule, Account.SObjectType);
+    System.assert(
+      planned.contains('NumberOfEmployees'),
+      'Found-formula operand must be planned: ' + planned
+    );
+    System.assert(
+      planned.contains('AnnualRevenue'),
+      'Expected-formula operand must be planned: ' + planned
+    );
+  }
+
   private static void assertReason(
     RecordHealthCheckResult result,
     String reasonCode
