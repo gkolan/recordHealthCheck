@@ -32,13 +32,10 @@ public with sharing class RecordHealthCheckMetadataValidator {
   // deploy-time validator and RecordHealthCheckConfigService (runtime) can never
   // drift. Local aliases keep the call sites below readable.
   //
-  // AUDIT (Q-01 / IMP-01 / D1, 2026-06-23):
-  // BEFORE: this class owned a full per-type rule-validation decision tree, duplicated
-  //   line-for-line in RecordHealthCheckConfigService.
-  // AFTER: the per-type tree lives once in RecordHealthCheckRuleValidator; this class keeps
-  //   the baseline + Check Set + dependency-graph checks (inline) plus a collect-all adapter
-  //   (toIssue). The comparator/source/null-empty value sets it used to reference now live with
-  //   the producers, so those aliases were removed here.
+  // The per-type rule-validation decision tree lives in RecordHealthCheckRuleValidator;
+  // this class keeps the baseline + Check Set + dependency-graph checks (inline) plus a
+  // collect-all adapter (toIssue). The comparator/source/null-empty value sets live with
+  // those producers.
   private static final Set<String> VALID_DISPLAY_MODES = RecordHealthCheckConstants.VALID_DISPLAY_MODES;
   private static final Set<String> VALID_TRIGGER_MODES = RecordHealthCheckConstants.VALID_TRIGGER_MODES;
   private static final Set<String> VALID_REVEAL_MODES = RecordHealthCheckConstants.VALID_REVEAL_MODES;
@@ -114,9 +111,8 @@ public with sharing class RecordHealthCheckMetadataValidator {
   }
 
   /** Machine-readable entry point for setup tooling and CI. */
-  // AUDIT (SCAN-12, 2026-06-23):
-  // BEFORE: @AuraEnabled(cacheable=true) could serve stale validation after metadata edits.
-  // AFTER: not cacheable — callers always get fresh results.
+  // Not cacheable: callers always get fresh results, so validation never goes stale
+  // after a metadata edit.
   @AuraEnabled
   public static String validateAsJson() {
     return JSON.serialize(new RecordHealthCheckMetadataValidator().validate());
@@ -445,13 +441,9 @@ public with sharing class RecordHealthCheckMetadataValidator {
 
   // ─── Per-type validation — collect-all adapter over RecordHealthCheckRuleValidator ───
   //
-  // AUDIT (Q-01 / IMP-01 / D1, 2026-06-23):
-  // BEFORE: each method below carried the full per-type decision tree, duplicated verbatim in
-  //   RecordHealthCheckConfigService.
-  // AFTER: the tree lives once in RecordHealthCheckRuleValidator; these wrappers collect every
-  //   finding and map each via toIssue. Issue order within a rule now follows the shared
-  //   (ConfigService) ordering; the set of issues per rule, and the zero-error guarantee on
-  //   packaged metadata, are unchanged.
+  // The per-type decision tree lives in RecordHealthCheckRuleValidator; these wrappers collect
+  // every finding and map each via toIssue. Issue order within a rule follows the shared
+  // (ConfigService) ordering.
 
   private List<ValidationIssue> validateApplicability(
     Record_Health_Check_Rule__mdt rule
@@ -949,9 +941,7 @@ public with sharing class RecordHealthCheckMetadataValidator {
           // node makes cycleStr read as a full loop ("A → B → C → A"). Dedupe
           // the members when emitting issues so each rule in the cycle gets
           // exactly one issue row rather than the start node getting two.
-          // AUDIT (COS-02, 2026-06-23):
-          // BEFORE: cycleStr joined the closed walk [A,B,C,A] → "A → B → C → A".
-          // AFTER: drop the repeated closing node for display → "A → B → C".
+          // For display, drop the repeated closing node: "A → B → C" not "A → B → C → A".
           List<String> cycleForDisplay = new List<String>(cycle);
           if (
             cycleForDisplay.size() > 1 &&

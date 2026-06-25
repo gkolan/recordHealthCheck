@@ -355,10 +355,9 @@ public with sharing class RecordHealthCheckSoqlEvaluator {
           //   Result:    WHERE Regions__c INCLUDES ('North', 'South')
           // Each semicolon-delimited value is individually quoted and comma-joined.
           //
-          // AUDIT (SCAN-45 / BIND-04, 2026-06-23):
-          // BEFORE: after filtering blank segments, an all-semicolon value (';' or ';;')
-          // still produced unquotedReplacement = '()' — invalid SOQL (INCLUDES ()).
-          // AFTER: empty quotedVals → MISSING_BIND_VALUE (same as unresolved token).
+          // An all-semicolon value (';' or ';;') has no segments after filtering, which
+          // would produce '()' — invalid SOQL (INCLUDES ()). Empty quotedVals instead
+          // raise MISSING_BIND_VALUE, same as an unresolved token.
           unquotedReplacement = buildMultiSelectIncludesClause(rawStr);
         } else {
           unquotedReplacement = quotedStr;

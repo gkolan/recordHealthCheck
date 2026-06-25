@@ -358,7 +358,7 @@ public with sharing class RecordHealthCheckComparatorEngine {
     }
     String joined = '[' + String.join(parts, ', ');
     if (values.size() > LIST_PREVIEW_CAP) {
-      // AUDIT (SCAN-41, 2026-06-23): ellipsis inside bracket without extra comma gap.
+      // Ellipsis sits inside the bracket without an extra comma gap.
       joined += ' … (' + values.size() + ' total)';
     }
     return joined + ']';

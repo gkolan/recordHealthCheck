@@ -198,10 +198,8 @@ public with sharing class RecordHealthCheckApexEvaluatorDispatcher {
       return fallbackResult;
     }
 
-    // Post-process FAIL: metadata controls severity; message only when plugin omitted one.
-    // AUDIT (SCAN-35, 2026-06-23):
-    // BEFORE: always overwrote apexResult.message with MessageWhenFailed__c merge.
-    // AFTER: preserve a non-blank plugin message; metadata fills in when blank.
+    // Post-process FAIL: metadata controls severity; a non-blank plugin message is
+    // preserved, and MessageWhenFailed__c only fills in when the plugin omitted one.
     if (apexResult.status == 'FAIL') {
       apexResult.severity = rule.Severity__c;
       if (String.isBlank(apexResult.message)) {

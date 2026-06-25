@@ -26,7 +26,7 @@ public with sharing class RecordHealthCheckController {
     Id recordId,
     String runId
   ) {
-    // AUDIT (SCAN-21, 2026-06-23): normalize at controller boundary (engine also normalizes evaluate).
+    // Normalize at the controller boundary (the engine also normalizes in evaluate).
     configName = RecordHealthCheckLogger.normalizeIdentifier(configName, 80);
     runId = RecordHealthCheckLogger.normalizeIdentifier(runId, 120);
     if (String.isBlank(configName)) {

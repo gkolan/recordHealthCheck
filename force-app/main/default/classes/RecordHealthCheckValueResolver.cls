@@ -140,10 +140,9 @@ public with sharing class RecordHealthCheckValueResolver {
         );
       }
     }
-    // AUDIT (SCAN-10, 2026-06-23):
-    // BEFORE: Date on one side and Datetime on the other fell through to
-    // String.valueOf equality and never matched (e.g. 2024-01-15 vs midnight).
-    // AFTER: normalize both through coerceDateTime before comparing.
+    // Normalize both sides through coerceDateTime before comparing, so a Date on one
+    // side and a Datetime on the other still match (a String.valueOf equality would
+    // never match, e.g. 2024-01-15 vs midnight).
     if (primary instanceof Date || comparison instanceof Date) {
       try {
         return coerceDateTime(primary) == coerceDateTime(comparison);
@@ -154,9 +153,8 @@ public with sharing class RecordHealthCheckValueResolver {
         );
       }
     }
-    // AUDIT (SCAN-32, 2026-06-23):
-    // BEFORE: Id vs 15/18-char String compared via String.valueOf (often unequal).
-    // AFTER: coerce both to Id before comparison.
+    // Coerce both sides to Id before comparison, so a 15-char and an 18-char form of
+    // the same Id match (String.valueOf would often compare them as unequal).
     if (primary instanceof Id || comparison instanceof Id) {
       try {
         return Id.valueOf(String.valueOf(primary)) ==

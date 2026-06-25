@@ -18,13 +18,9 @@ public with sharing class RecordHealthCheckConfigService {
   // runtime validator and RecordHealthCheckMetadataValidator (deploy-time) can
   // never drift. Local aliases keep the call sites below readable.
   //
-  // AUDIT (Q-01 / IMP-01 / D1, 2026-06-23):
-  // BEFORE: this class owned a full per-type rule-validation decision tree, duplicated
-  //   line-for-line in RecordHealthCheckMetadataValidator.
-  // AFTER: the per-type tree lives once in RecordHealthCheckRuleValidator; this class only
-  //   keeps the baseline checks below (inline) plus a first-fail adapter (toResult). The
-  //   comparator/source/null-empty value sets it used to reference now live with the producers,
-  //   so those aliases were removed here.
+  // The per-type rule-validation decision tree lives in RecordHealthCheckRuleValidator;
+  // this class keeps only the baseline checks below (inline) plus a first-fail adapter
+  // (toResult). The comparator/source/null-empty value sets live with those producers.
   private static final Set<String> VALID_DISPLAY_MODES = RecordHealthCheckConstants.VALID_DISPLAY_MODES;
   private static final Set<String> VALID_TRIGGER_MODES = RecordHealthCheckConstants.VALID_TRIGGER_MODES;
   private static final Set<String> VALID_REVEAL_MODES = RecordHealthCheckConstants.VALID_REVEAL_MODES;
@@ -57,9 +53,8 @@ public with sharing class RecordHealthCheckConfigService {
     String configName,
     Id recordId
   ) {
-    // AUDIT (SCAN-21/SCAN-22, 2026-06-23):
-    // BEFORE: configName passed to SOQL as-is (whitespace / blank not rejected early).
-    // AFTER: normalize at service boundary; blank → CONFIG_NOT_FOUND.
+    // Normalize at the service boundary so whitespace/blank is rejected before SOQL;
+    // blank → CONFIG_NOT_FOUND.
     configName = RecordHealthCheckLogger.normalizeIdentifier(configName, 80);
     if (String.isBlank(configName)) {
       throw new ConfigException(
@@ -144,9 +139,8 @@ public with sharing class RecordHealthCheckConfigService {
     response.totalAvailableCheckCount = totalAvailable;
     response.checksOmittedByLimit = checksOmitted;
 
-    // AUDIT (OBS-01, 2026-06-23):
-    // BEFORE: truncation surfaced only in LWC "First 25 shown" badge — no server log.
-    // AFTER: emit WARN when active rules exceed FRAMEWORK_MAX_CHECKS.
+    // Emit WARN when active rules exceed FRAMEWORK_MAX_CHECKS, so truncation is
+    // visible server-side and not only in the LWC "First 25 shown" badge.
     if (checksOmitted) {
       RecordHealthCheckLogger.log(
         RecordHealthCheckLogger.Level.WARN,
@@ -428,12 +422,9 @@ public with sharing class RecordHealthCheckConfigService {
 
   // ─── Per-type validation — first-fail adapter over RecordHealthCheckRuleValidator ───
   //
-  // AUDIT (Q-01 / IMP-01 / D1, 2026-06-23):
-  // BEFORE: each method below carried the full per-type decision tree, duplicated verbatim in
-  //   RecordHealthCheckMetadataValidator.
-  // AFTER: the tree lives once in RecordHealthCheckRuleValidator; these wrappers take the FIRST
-  //   finding (preserving the historical first-fail order) and map it via toResult. MaxRows and
-  //   null/empty-behavior are appended only for Query / CompareTwoQueries, exactly as before.
+  // The per-type decision tree lives in RecordHealthCheckRuleValidator; these wrappers take
+  // the FIRST finding (first-fail order) and map it via toResult. MaxRows and null/empty-behavior
+  // are appended only for Query / CompareTwoQueries.
 
   /**
    * Validates the ApplicabilityMode gate (Formula / SOQL sub-fields). Returns null when the

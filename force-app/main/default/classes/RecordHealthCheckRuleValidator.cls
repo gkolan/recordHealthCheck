@@ -6,30 +6,25 @@
 /**
  * Shared rule-validation decision tree for Record Health Check.
  *
- * AUDIT (Q-01 / IMP-01 / D1, 2026-06-23):
- * BEFORE: RecordHealthCheckConfigService (runtime, first-fail → RecordHealthCheckResult)
- *   and RecordHealthCheckMetadataValidator (deploy-time, collect-all → ValidationIssue)
- *   each carried a near-identical ~800-line copy of the per-type query/dual/applicability/
- *   formula/apex/MaxRows/null-empty validation logic, kept in sync only by discipline.
- * AFTER: the decision tree lives here exactly once. Producers emit neutral Findings in a
- *   single canonical order (= ConfigService's historical first-fail order). Each caller maps
- *   FindingCode → its own output contract:
- *     - ConfigService takes findings[0] (first failure) and maps via toResult(...).
- *     - MetadataValidator collects every finding and maps via toIssue(...).
- *   The per-class reason codes / messages / field names — the intentional divergence between
- *   the two paths — now live only in those two mapping tables, not in the branching logic.
+ * The per-type query/dual/applicability/formula/apex/MaxRows/null-empty validation
+ * lives here once. Producers emit neutral Findings in a single canonical order
+ * (= ConfigService's first-fail order). Each caller maps FindingCode to its own
+ * output contract:
+ *   - ConfigService    takes findings[0] (first failure) → toResult(...)
+ *   - MetadataValidator collects every finding           → toIssue(...)
+ * The divergent reason codes / messages / field names live only in those two
+ * mapping tables, never in the branching logic below.
  *
- * Scope note: the small "baseline" checks (Label, Priority, Message When Failed, Check Method,
- * Severity, Applicability Mode) deliberately stay inline in each caller. They have genuinely
- * divergent ordering, granularity (ConfigService combines Label+Priority into one message), and
- * short-circuit semantics (MetadataValidator validates Severity/Message before its terminating
- * bad-Check-Method return). Sharing them would risk a subtle per-rule output change, so only the
- * per-type tree below — the bulk of the duplication — is extracted.
- *
- * MaxRows and null/empty-behavior are standalone producers because the two callers scope them
- * differently: ConfigService checks them only for Query/CompareTwoQueries; MetadataValidator
- * checks them once at top level for all types. Keeping them separate lets each caller compose
- * them where it always has, with no double-counting and no new findings on the runtime path.
+ * Intentionally NOT shared (do not "consolidate" these):
+ *   - The baseline checks (Label, Priority, Message When Failed, Check Method,
+ *     Severity, Applicability Mode) stay inline in each caller — divergent ordering,
+ *     granularity (ConfigService combines Label+Priority into one message), and
+ *     short-circuit semantics (MetadataValidator validates Severity/Message before
+ *     its terminating bad-Check-Method return).
+ *   - MaxRows and null/empty-behavior are standalone producers — ConfigService scopes
+ *     them to Query/CompareTwoQueries; MetadataValidator runs them once at top level
+ *     for all types. Keeping them separate avoids double-counting and adds no findings
+ *     on the runtime path.
  */
 public with sharing class RecordHealthCheckRuleValidator {
   // Valid-value sets are owned by RecordHealthCheckConstants so this validator and its two
