@@ -69,6 +69,9 @@ BillingCity = ShippingCity
 - **Field equality**: not a blank check; both sides must agree when the gate is open.
 - **Applicability formula**: skips Accounts with no shipping city so empty Shipping City never silently passes.
 
+> [!TIP]
+> To show **which** values differed on a failure, add `FoundValueFormula__c = BillingCity` and `ExpectedValueFormula__c = ShippingCity`. The row then displays Found vs Expected instead of just the formula text. See [Found / Expected values](08-found-expected-values.md).
+
 ## Get this example
 
 This rule ships in the **`Account_Examples_Formula`** Check Set. Deploy the engine once, then the Check Set, then wire the component to it:

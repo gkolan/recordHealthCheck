@@ -141,6 +141,10 @@ Evaluates `PassFailFormula__c` against the loaded record. Formula must return Bo
 | Non-boolean result | `UNABLE_TO_EVALUATE` |
 | Formula error or inaccessible field | `UNABLE_TO_EVALUATE` |
 
+Operands in `PassFailFormula__c` may be **calculated fields** (formula, roll-up) at any depth — field planning expands the full dependency chain so FormulaEval can regenerate each value from the loaded record.
+
+**Optional Found / Expected display** (`FoundValueFormula__c`, `ExpectedValueFormula__c`): when set, each is evaluated as a scalar (via `resolveScalar`, honoring `ScalarFormulaReturnType__c`) and populates `actualValue` / `expectedValue` for the row, formatted like Query checks. They are **display-only** — pass/fail stays decided by the Boolean `PassFailFormula__c`, the two sides are not compared to each other, and an unresolvable display formula falls back to the default (quoted formula echo) without changing status. They get the same calculated-field dependency expansion as `PassFailFormula__c`.
+
 Uses Salesforce FormulaEval API (`Formula.builder()`). Requires API v63.0+ (Spring '25). Salesforce platform limit: **100 FormulaEval calls per Apex transaction**. The framework tracks calls for the whole transaction and throws `FORMULA_EVAL_LIMIT` when the count reaches **95** (a 5-call safety margin). A single Rule can consume multiple FormulaEval calls (formula body, applicability, merge-field resolution). Flow or batch jobs that evaluate many checks in one transaction share one budget.
 
 ### Single query (`Query`)
@@ -232,8 +236,8 @@ Ordered comparisons try `Decimal`, then `DateTime`, then `Date`. Incompatible ty
 | `severity` | Populated for failed checks. |
 | `reasonCode` | Machine-readable reason for skipped, unable, or error results. |
 | `message` | Safe user-facing message (from `MessageWhenFailed__c` on `FAIL`, or unable/skip text otherwise). |
-| `actualValue` | What the record or query produced: the **Found** side in the UI. Populated on a determinate `PASS` or `FAIL` when the evaluator can name a primary value (Query, CompareTwoQueries, Apex when set). Left null for Formula checks. |
-| `expectedValue` | The comparator and operand as readable text: the **Expected** side in the UI. Populated on a determinate `PASS` or `FAIL` for Query and CompareTwoQueries; for Formula checks, set to `PassFailFormula__c` (condition text only: no separable record value). Apex plugins may set either field. |
+| `actualValue` | What the record or query produced: the **Found** side in the UI. Populated on a determinate `PASS` or `FAIL` when the evaluator can name a primary value (Query, CompareTwoQueries, Apex when set). Left null for Formula checks unless `FoundValueFormula__c` is configured (then it carries that scalar). |
+| `expectedValue` | The comparator and operand as readable text: the **Expected** side in the UI. Populated on a determinate `PASS` or `FAIL` for Query and CompareTwoQueries; for Formula checks, set to the resolved `ExpectedValueFormula__c` scalar when configured, otherwise the quoted `PassFailFormula__c` condition text. Apex plugins may set either field. |
 | `detailMessage` | Diagnostic detail (server-side; not `@AuraEnabled`). |
 | `adminDetailMessage` | Populated only when `DebugMode__c` is on **and** the user has **`Record_Health_Check_Debug`** (permission set `Record_Health_Check_Admin`). |
 | `durationMs` | Evaluator execution time; excludes configuration, dependencies, base-record loading, applicability, and event delivery. |
@@ -246,7 +250,7 @@ Ordered comparisons try `Decimal`, then `DateTime`, then `Date`. Incompatible ty
 | UI visibility | The LWC shows **Found** / **Expected** only on resolved **non-passing** rows (`FAIL`) when at least one side is present. Passing rows do not show the block even when values were captured. |
 | UI layout | Each side renders as a **labelled chip**: an uppercase caption (`Found` / `Expected`) beside the value in a monospace chip. The two sides **stack vertically** (Found on its own line, then Expected) so layout does not reflow with value length. |
 | Screen readers | Both sides are folded into the row `aria-label` when shown (`Found …`, `Expected …`). |
-| Formula checks | No separable scalar "found" value: `expectedValue` carries the quoted formula text; `actualValue` stays null; only the Expected side renders. |
+| Formula checks | By default no separable scalar "found" value: `expectedValue` carries the quoted formula text, `actualValue` stays null, only the Expected side renders. Optional display-only `FoundValueFormula__c` / `ExpectedValueFormula__c` scalars populate the two sides for balance/comparison checks; pass/fail stays decided solely by the Boolean `PassFailFormula__c`, and an unresolvable display formula falls back to the default. |
 | Skipped / unable / error | Neither field is shown: these outcomes have no determinate comparison. |
 | Programmatic API | `RecordHealthCheck.run` returns the same fields on `RecordHealthCheckResult`. |
 
@@ -486,8 +490,9 @@ Before the first Manual run (both `OneAtATime` and `AllAtOnce`), shows one line:
 - Row status icons are **CSS-drawn** circles (`rhc-status-icon--*`): not `lightning-icon`.
 - Always renders `FAIL` (Error), `Warning`, `Info`, and `UNABLE_TO_EVALUATE` outcomes as full rows: these are actionable and are never collapsed into the summary bar. Only `PASS` and `SKIPPED` outcomes can be collapsed (via `PassedChecksDisplay__c` / `SkippedChecksDisplay__c`).
 - Applies `PassedChecksDisplay__c` and `SkippedChecksDisplay__c`: rows in `Hide` mode are filtered from the list even when `RowAppearance__c` is `AllAtOnce`.
-- On resolved **non-passing** rows, shows a **Found** / **Expected** comparison block beneath `MessageWhenFailed__c` when the evaluator populated `actualValue` and/or `expectedValue`: rendered as stacked labelled chips (see [9](#comparison-display-contract)). Example: Found `"Cold"` on one line; Expected `does not equal "Cold"` on the next. Formula failures show Expected only (quoted formula text). Not shown on `PASS`, `SKIPPED`, `UNABLE_TO_EVALUATE`, or `ERROR`.
-- Shows `adminDetailMessage`, per-row debug-meta, and console footnote when `DebugMode__c` is on **and** the user has `Record_Health_Check_Debug` (see [Debug Mode guide](../guides/debug-mode.md)).
+- On resolved **non-passing** rows, shows a **Found** / **Expected** comparison block beneath `MessageWhenFailed__c` when the evaluator populated `actualValue` and/or `expectedValue`: rendered as stacked labelled chips (see [9](#comparison-display-contract)). Example: Found `"Cold"` on one line; Expected `does not equal "Cold"` on the next. Formula failures show Expected only (quoted formula text) unless `FoundValueFormula__c` / `ExpectedValueFormula__c` are configured, in which case both resolved scalars render. Not shown on `PASS`, `SKIPPED`, `UNABLE_TO_EVALUATE`, or `ERROR`.
+- Renders `MessageWhenFailed__c` / `MessageWhenCannotRun__c` across multiple lines: newlines authored in Setup become separate visual lines (interior blank lines preserved as spacing), folded into one sentence for the row `aria-label`.
+- Shows `adminDetailMessage` **inline** (no click-to-expand), per-row debug-meta, and console footnote when `DebugMode__c` is on **and** the user has `Record_Health_Check_Debug` (see [Debug Mode guide](../guides/debug-mode.md)).
 
 ### Summary bar
 
@@ -590,7 +595,7 @@ These items were previously tracked as known bugs and are **fixed** in the curre
 | B14 | Debug details gated by `Record_Health_Check_Debug` Custom Permission in Apex (`RecordHealthCheckAccess`). |
 | B15 | Null `recordId` on evaluate path returns `NO_RECORD_CONTEXT`. |
 | B17 | Manual mode shows pre-run guidance before the first run in **both** reveal modes (`showPreRunHint`). |
-| B18 | Non-passing rows show **Found** / **Expected** labelled chips from `actualValue` / `expectedValue`; Formula checks show Expected (quoted formula text) only. |
+| B18 | Non-passing rows show **Found** / **Expected** labelled chips from `actualValue` / `expectedValue`; Formula checks show Expected (quoted formula text) only, unless `FoundValueFormula__c` / `ExpectedValueFormula__c` supply display-only scalars. |
 | B19 | Row and summary-pill status icons are CSS-drawn (`rhc-status-icon--*`): not `lightning-icon`: for reliable rendering. |
 | B20 | Summary pills list rule labels in hover/focus tooltips; standalone per-status footer notes removed. |
 | B21 | Rule descriptions are tooltip-only (never inline); tooltips use `:focus-visible` to avoid double-tooltip on mouse click. |

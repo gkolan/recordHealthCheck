@@ -87,4 +87,4 @@ Set the component's **Check Set Developer Name** to `Account_Examples_Formula`. 
 
 On a child Account, clear Billing City on the parent record to fail; populate it to pass. Remove Parent Account to see the check skipped.
 
-[← Examples index](../index.md) · [← Prev: Type-scoped rule](06-type-scoped.md)
+[← Examples index](../index.md) · [← Prev: Type-scoped rule](06-type-scoped.md) · [Next: Found / Expected values →](08-found-expected-values.md)

@@ -187,6 +187,13 @@ Setup label: **Record formula**.
 | API field | Required | Value |
 | --- | --- | --- |
 | `PassFailFormula__c` | Yes | Boolean formula; `true` = pass |
+| `FoundValueFormula__c` | Optional | Scalar formula shown as **Found** (left side of a comparison). Display only — does not affect pass/fail. |
+| `ExpectedValueFormula__c` | Optional | Scalar formula shown as **Expected** (right side). Display only; blank = Expected echoes `PassFailFormula__c`. |
+| `ScalarFormulaReturnType__c` | Optional | Type of the Found/Expected scalars (`Number`/`Text`/`Date`/`DateTime`/`Boolean`), or `Auto`. |
+
+Operands in any of these formulas may be calculated fields (formula, roll-up) at any depth — the engine loads the full dependency chain.
+
+**Found/Expected are display-only and NOT compared to each other.** `PassFailFormula__c` performs the comparison and decides pass/fail. Set Found/Expected only for comparison/balance checks, and mirror each side of the Pass/Fail comparison (Found = left operand, Expected = right) so the row does not mislead. For framework-driven comparison with an operator, use a Query check (`CompareAgainst__c` = `FixedValue` / `RecordFormula` / `AnotherQuery`).
 
 **Leave unset:** `DataQuery__c`, `Operator__c`, `CompareAgainst__c`, `WhenMultipleRows__c` (ignored).
 

@@ -143,6 +143,7 @@ For when to reach for a health check instead of save-time enforcement, see [Conf
 | 05 | [05-two-fields-compared.md](formula/05-two-fields-compared.md) | Field equality + applicability | Consistency coaching across two fields |
 | 06 | [06-type-scoped.md](formula/06-type-scoped.md) | `ISPICKVAL` gate | Partner-only guidance without other-type noise |
 | 07 | [07-parent-field.md](formula/07-parent-field.md) | `Parent.Field` | Parent quality visible from the child page |
+| 08 | [08-found-expected-values.md](formula/08-found-expected-values.md) | Found/Expected display + multi-line message | Show the two sides of a comparison, not just the formula |
 
 ### Query (`query/`): related records via SOQL
 
@@ -227,7 +228,7 @@ Deploy `package-core.xml` first, then the manifest for the relevant walkthrough 
 
 | Check Set | Manifest | Rules | Start here |
 | --------- | -------- | ----: | ---------- |
-| `Account_Examples_Formula` | `package-Account_Examples_Formula.xml` | 7 | [formula/01-single-required-field.md](formula/01-single-required-field.md) |
+| `Account_Examples_Formula` | `package-Account_Examples_Formula.xml` | 8 | [formula/01-single-required-field.md](formula/01-single-required-field.md) |
 | `Account_Examples_Query` | `package-Account_Examples_Query.xml` | 17 | [query/01-child-count-minimum-one.md](query/01-child-count-minimum-one.md) |
 | `Account_Examples_Compare_Two_Queries` | `package-Account_Examples_Compare_Two_Queries.xml` | 6 | [compare-two-queries/01-aggregate-counts.md](compare-two-queries/01-aggregate-counts.md) |
 | `Account_Examples_Apex` | `package-Account_Examples_Apex.xml` | 4 | [apex/01-recent-activity.md](apex/01-recent-activity.md) |

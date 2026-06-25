@@ -12,6 +12,8 @@
         <members
     >Record_Health_Check_Rule__mdt.Employee_Count_Is_Positive</members>
         <members
+    >Record_Health_Check_Rule__mdt.Employee_Count_Meets_Minimum</members>
+        <members
     >Record_Health_Check_Rule__mdt.Parent_Account_Has_Billing_City</members>
         <members
     >Record_Health_Check_Rule__mdt.Partner_Has_Billing_Country</members>

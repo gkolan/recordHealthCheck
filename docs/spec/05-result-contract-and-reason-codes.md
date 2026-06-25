@@ -13,8 +13,8 @@
 | `severity` | Populated for failed checks. |
 | `reasonCode` | Machine-readable reason for skipped, unable, or error results. |
 | `message` | Safe user-facing message (from `MessageWhenFailed__c` on `FAIL`, or unable/skip text otherwise). |
-| `actualValue` | What the record or query produced: the **Found** side in the UI. Populated on a determinate `PASS` or `FAIL` when the evaluator can name a primary value (Query, CompareTwoQueries, Apex when set). Left null for Formula checks. |
-| `expectedValue` | The comparator and operand as readable text: the **Expected** side in the UI. Populated on a determinate `PASS` or `FAIL` for Query and CompareTwoQueries; for Formula checks, set to `PassFailFormula__c` (condition text only: no separable record value). Apex plugins may set either field. |
+| `actualValue` | What the record or query produced: the **Found** side in the UI. Populated on a determinate `PASS` or `FAIL` when the evaluator can name a primary value (Query, CompareTwoQueries, Apex when set). Left null for Formula checks unless `FoundValueFormula__c` is configured (then it carries that scalar). |
+| `expectedValue` | The comparator and operand as readable text: the **Expected** side in the UI. Populated on a determinate `PASS` or `FAIL` for Query and CompareTwoQueries; for Formula checks, set to the resolved `ExpectedValueFormula__c` scalar when configured, otherwise to the quoted `PassFailFormula__c` condition text. Apex plugins may set either field. |
 | `detailMessage` | Diagnostic detail (server-side; not `@AuraEnabled`). |
 | `adminDetailMessage` | Populated only when `DebugMode__c` is on **and** the user has **`Record_Health_Check_Debug`** (permission set `Record_Health_Check_Admin`). |
 | `durationMs` | Evaluator execution time; excludes configuration, dependencies, base-record loading, applicability, and event delivery. |
@@ -27,7 +27,7 @@
 | UI visibility | The LWC shows **Found** / **Expected** only on resolved **non-passing** rows (`FAIL`) when at least one side is present. Passing rows do not show the block even when values were captured. |
 | UI layout | Each side renders as a **labelled chip**: an uppercase caption (`Found` / `Expected`) beside the value in a monospace chip. The two sides **stack vertically** (Found on its own line, then Expected) so layout does not reflow with value length. |
 | Screen readers | Both sides are folded into the row `aria-label` when shown (`Found …`, `Expected …`). |
-| Formula checks | No separable scalar "found" value: `expectedValue` carries the quoted formula text; `actualValue` stays null; only the Expected side renders. |
+| Formula checks | By default no separable scalar "found" value: `expectedValue` carries the quoted formula text, `actualValue` stays null, only the Expected side renders. Optional `FoundValueFormula__c` / `ExpectedValueFormula__c` (display-only scalars) populate the two sides for balance/comparison checks; pass/fail is still decided solely by the Boolean `PassFailFormula__c`, and an unresolvable display formula falls back to the default. |
 | Skipped / unable / error | Neither field is shown: these outcomes have no determinate comparison. |
 | Programmatic API | `RecordHealthCheck.run` returns the same fields on `RecordHealthCheckResult`. |
 

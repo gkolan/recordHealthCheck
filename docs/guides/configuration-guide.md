@@ -138,6 +138,9 @@ ExpectedValueFormula__c: BLANKVALUE(Credit_Total__c, 0)
 
 On a failing row this renders **Found "100"** / **Expected "75"** instead of echoing the formula.
 
+> [!CAUTION]
+> **Keep Found/Expected consistent with the Pass/Fail Formula.** Because the engine does not compare the two sides itself, nothing stops you from showing values that disagree with the actual result. If `PassFailFormula__c` compares A to B, then `FoundValueFormula__c` should be A and `ExpectedValueFormula__c` should be B — otherwise a row can **pass while Found ≠ Expected** (or fail while they look equal), which is confusing. A safe habit: copy each side of the comparison in `PassFailFormula__c` verbatim into the matching display formula.
+
 - **When to use boolean-only:** the formula is a simple presence/condition check (`NOT(ISBLANK(...))`, `ISPICKVAL(...)`) where echoing the condition as Expected is enough.
 - **When to add Found/Expected:** the formula compares two values (balance, threshold, equality, date) and seeing both sides is more actionable than the formula text.
 - Leave both blank to keep the original behavior (Expected = quoted `PassFailFormula__c`, no Found).
