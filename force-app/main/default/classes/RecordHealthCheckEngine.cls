@@ -27,14 +27,65 @@ public with sharing class RecordHealthCheckEngine {
   // SELECT. Static so it is built once per transaction rather than per scan
   // (the scan now runs recursively across the whole dependency chain).
   private static final Set<String> FORMULA_FUNCTION_WORDS = new Set<String>{
-    'ABS', 'AND', 'BEGINS', 'BLANKVALUE', 'BR', 'CASE', 'CEILING', 'CONTAINS',
-    'CURRENCYRATE', 'DATE', 'DATETIMEVALUE', 'DATEVALUE', 'DAY', 'EXP', 'FALSE',
-    'FIND', 'FLOOR', 'HTMLENCODE', 'HOUR', 'HYPERLINK', 'IF', 'IMAGE',
-    'INCLUDES', 'ISBLANK', 'ISNULL', 'ISPICKVAL', 'JSENCODE', 'JSINHTMLENCODE',
-    'LEFT', 'LEN', 'LN', 'LOG', 'LOWER', 'MAX', 'MID', 'MIN', 'MOD', 'MONTH',
-    'NOT', 'NOW', 'NULL', 'NULLVALUE', 'OR', 'PI', 'POWER', 'REGEX', 'RIGHT',
-    'ROUND', 'SQRT', 'SUBSTITUTE', 'TEXT', 'TODAY', 'TRIM', 'TRUE', 'UPPER',
-    'URLENCODE', 'VALUE', 'WEEKDAY', 'YEAR'
+    'ABS',
+    'AND',
+    'BEGINS',
+    'BLANKVALUE',
+    'BR',
+    'CASE',
+    'CEILING',
+    'CONTAINS',
+    'CURRENCYRATE',
+    'DATE',
+    'DATETIMEVALUE',
+    'DATEVALUE',
+    'DAY',
+    'EXP',
+    'FALSE',
+    'FIND',
+    'FLOOR',
+    'HTMLENCODE',
+    'HOUR',
+    'HYPERLINK',
+    'IF',
+    'IMAGE',
+    'INCLUDES',
+    'ISBLANK',
+    'ISNULL',
+    'ISPICKVAL',
+    'JSENCODE',
+    'JSINHTMLENCODE',
+    'LEFT',
+    'LEN',
+    'LN',
+    'LOG',
+    'LOWER',
+    'MAX',
+    'MID',
+    'MIN',
+    'MOD',
+    'MONTH',
+    'NOT',
+    'NOW',
+    'NULL',
+    'NULLVALUE',
+    'OR',
+    'PI',
+    'POWER',
+    'REGEX',
+    'RIGHT',
+    'ROUND',
+    'SQRT',
+    'SUBSTITUTE',
+    'TEXT',
+    'TODAY',
+    'TRIM',
+    'TRUE',
+    'UPPER',
+    'URLENCODE',
+    'VALUE',
+    'WEEKDAY',
+    'YEAR'
   };
 
   @TestVisible
@@ -872,10 +923,16 @@ public with sharing class RecordHealthCheckEngine {
       // If the operand is itself a calculated field, expand the fields ITS
       // definition references so the whole chain can be regenerated.
       FieldPathDescribe info = describeFieldPath(resolveType, token);
-      if (info != null && info.describe != null && info.describe.isCalculated()) {
+      if (
+        info != null &&
+        info.describe != null &&
+        info.describe.isCalculated()
+      ) {
         String nested = info.describe.getCalculatedFormula();
         String visitKey =
-          String.valueOf(info.ownerType) + '.' + info.describe.getName();
+          String.valueOf(info.ownerType) +
+          '.' +
+          info.describe.getName();
         if (String.isNotBlank(nested) && visited.add(visitKey)) {
           expandFormulaDependencies(
             fields,

@@ -3793,14 +3793,23 @@ private class RecordHealthCheckCoverageTest {
       'AND(NOT(ISBLANK(BillingCity)), CONTAINS(Website, "example.com"), NOT(ISBLANK(Parent.BillingCity)))'
     );
     Set<String> tokenSet = new Set<String>(tokens);
-    System.assert(tokenSet.contains('BillingCity'), tokens + ' should keep BillingCity');
-    System.assert(tokenSet.contains('Website'), tokens + ' should keep Website');
+    System.assert(
+      tokenSet.contains('BillingCity'),
+      tokens + ' should keep BillingCity'
+    );
+    System.assert(
+      tokenSet.contains('Website'),
+      tokens + ' should keep Website'
+    );
     System.assert(
       tokenSet.contains('Parent.BillingCity'),
       tokens + ' should keep the relationship path whole'
     );
     System.assert(!tokenSet.contains('AND'), 'Function words must be excluded');
-    System.assert(!tokenSet.contains('CONTAINS'), 'Function words must be excluded');
+    System.assert(
+      !tokenSet.contains('CONTAINS'),
+      'Function words must be excluded'
+    );
     System.assert(
       !tokenSet.contains('example'),
       'Masked string-literal contents must not be scanned as fields'
@@ -3940,7 +3949,7 @@ private class RecordHealthCheckCoverageTest {
     System.assert(
       result.expectedValue != null && result.expectedValue.contains('105'),
       'Expected should be the resolved right-side scalar: ' +
-        result.expectedValue
+      result.expectedValue
     );
 
     // Blank Found/Expected → original behavior: no Found, Expected echoes the
