@@ -152,14 +152,12 @@
                   <span class="rhc-debug-meta">{check.debugMeta}</span>
                 </template>
                 <template if:true={check.showAdminDetail}>
-                  <details class="rhc-debug-detail">
-                    <summary class="rhc-debug-detail__summary">
-                      Debug detail
-                    </summary>
+                  <div class="rhc-debug-detail">
+                    <span class="rhc-debug-detail__label">Debug detail</span>
                     <pre class="rhc-debug-detail__body">
 {check.adminDetailMessage}</pre
                     >
-                  </details>
+                  </div>
                 </template>
               </div>
             </li>

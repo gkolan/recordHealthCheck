@@ -235,11 +235,16 @@
 
 /* ── Summary stats bar ─────────────────────────────────────────────────────── */
 .rhc-stats-bar {
+  /* Vertical padding is shared with the nubbin offset below: the pill sits this
+     far above the bar's bottom edge, so the arrow must drop by the same amount
+     to reach the bubble that hangs off the bar. Keeping it in one var means the
+     arrow stays glued to the bubble if the padding ever changes. */
+  --rhc-stats-bar-pad-y: 0.625rem;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 0.375rem;
-  padding: 0.625rem 1rem;
+  padding: var(--rhc-stats-bar-pad-y) 1rem;
   border-top: 1px solid var(--slds-g-color-border-base-1, #f0f0f0);
   /* Positioning context for summary-pill tooltips (bubble spans the bar). */
   position: relative;
@@ -270,7 +275,11 @@
 
 .rhc-stat__nubbin {
   position: absolute;
-  top: calc(100% + 0.25rem);
+  /* Drop past the bar's bottom padding so the arrow lands at the bubble's top
+     edge (which hangs 0.5rem below the bar), instead of floating up by the pill
+     with a gap to the bubble. This mirrors the rule-row arrow, which sits right
+     against its bubble. */
+  top: calc(100% + var(--rhc-stats-bar-pad-y) + 0.25rem);
   left: 50%;
   width: 0.5rem;
   height: 0.5rem;
@@ -735,10 +744,20 @@
 /* Flip the arrow to sit above the anchor and point down. border-bottom/right +
    rotate(45deg) makes the apex point downward (mirror of the default up arrow).
    Covers the rule row's ::before nubbin and the summary pill's sibling nubbin. */
-.rhc-tooltip-anchor--row.rhc-tooltip-anchor--flip-up::before,
-.rhc-tooltip-anchor--flip-up ~ .rhc-stat__nubbin-host .rhc-stat__nubbin {
+.rhc-tooltip-anchor--row.rhc-tooltip-anchor--flip-up::before {
   top: auto;
   bottom: calc(100% + 0.25rem);
+  border-top: 0;
+  border-left: 0;
+  border-bottom: 1px solid var(--slds-g-color-border-base-3, #aeacaa);
+  border-right: 1px solid var(--slds-g-color-border-base-3, #aeacaa);
+}
+
+/* The summary nubbin clears the bar's top padding when flipped up, mirroring the
+   downward offset so it stays glued to the bubble above the bar. */
+.rhc-tooltip-anchor--flip-up ~ .rhc-stat__nubbin-host .rhc-stat__nubbin {
+  top: auto;
+  bottom: calc(100% + var(--rhc-stats-bar-pad-y) + 0.25rem);
   border-top: 0;
   border-left: 0;
   border-bottom: 1px solid var(--slds-g-color-border-base-3, #aeacaa);
@@ -766,18 +785,15 @@
   margin-top: 0.375rem;
 }
 
-.rhc-debug-detail__summary {
+/* In debug mode the technical detail is shown inline (no click-to-expand), so
+   this is a static caption above the message rather than a clickable summary. */
+.rhc-debug-detail__label {
+  display: block;
   font-size: 0.6875rem;
   font-weight: 600;
   color: var(--slds-g-color-neutral-base-40, #706e6b);
-  cursor: pointer;
-  user-select: none;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-}
-
-.rhc-debug-detail__summary:hover {
-  color: var(--slds-g-color-neutral-base-20, #3e3e3c);
 }
 
 .rhc-debug-detail__body {

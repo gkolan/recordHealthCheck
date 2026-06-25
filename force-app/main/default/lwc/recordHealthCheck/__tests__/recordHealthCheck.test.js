@@ -410,6 +410,36 @@ describe("c-record-health-check — run orchestration", () => {
     );
   });
 
+  it("shows the debug detail message inline, with no click-to-expand", async () => {
+    getCheckDefinitions.mockResolvedValue(
+      makeDefinitions({
+        triggerMode: "Automatic",
+        debugMode: true,
+        checks: [makeDefinitions().checks[0]]
+      })
+    );
+    evaluateCheck.mockResolvedValue({
+      checkDeveloperName: "Check_A",
+      label: "Check_A",
+      status: "UNABLE_TO_EVALUATE",
+      reasonCode: "INVALID_FORMULA",
+      message: "This check could not be evaluated.",
+      adminDetailMessage: "Formula could not generate the requested field.",
+      priority: 1,
+      evaluatorType: "Formula"
+    });
+    await appendAndLoad(element);
+
+    // The technical detail is rendered directly — no <details>/<summary> wrapper
+    // the admin has to open.
+    expect(element.shadowRoot.querySelector("details")).toBeNull();
+    const body = element.shadowRoot.querySelector(".rhc-debug-detail__body");
+    expect(body).not.toBeNull();
+    expect(body.textContent).toContain(
+      "Formula could not generate the requested field."
+    );
+  });
+
   it("shows re-run button after run completes", async () => {
     getCheckDefinitions.mockResolvedValue(makeDefinitions());
     evaluateCheck.mockResolvedValue(PASS_RESULT("Check_A"));

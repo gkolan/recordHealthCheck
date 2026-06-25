@@ -34,7 +34,7 @@ After you **run** the checks (automatic or manual), and only when both steps abo
 | What | Description |
 | ---- | ----------- |
 | **Gray line under each result** | Compact summary, for example `FAIL · FORMULA_FALSE · 38ms · Formula`: status, reason code, time taken, Check Method (API value) |
-| **Debug detail** | On checks that errored or could not run, an expandable **Debug detail** section with the technical message (SOQL problems, missing field access, and similar) |
+| **Debug detail** | On checks that errored or could not run, a **Debug detail** block showing the technical message inline (SOQL problems, missing field access, and similar) — no need to click to expand it |
 | **Found / Expected** | On failing checks, labelled chips when the engine captured values (visible to all users on failures: not unique to debug mode) |
 | **Console hint** | Small footnote at the bottom of the card: **Check console (F12) for diagnostics.** |
 

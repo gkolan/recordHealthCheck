@@ -128,6 +128,8 @@ By default a Formula check shows only **Expected** — the quoted formula text �
 
 `PassFailFormula__c` still decides pass/fail (it must return Boolean); these two are display-only and additive.
 
+> **Found and Expected are not compared to each other.** The engine evaluates each independently and just shows them. `PassFailFormula__c` performs the actual comparison (`FieldA = FieldB`, `Total >= 50000`, …) and is the only thing that determines pass/fail. If you put a formula in Found/Expected, it does **not** affect the result — it only changes what the row displays. There is no separate "formula comparison operator" setting: the comparison lives inside `PassFailFormula__c`.
+
 ```text
 PassFailFormula__c:      BLANKVALUE(Debit_Total__c, 0) = BLANKVALUE(Credit_Total__c, 0)
 FoundValueFormula__c:    BLANKVALUE(Debit_Total__c, 0)
@@ -141,6 +143,19 @@ On a failing row this renders **Found "100"** / **Expected "75"** instead of ech
 - Leave both blank to keep the original behavior (Expected = quoted `PassFailFormula__c`, no Found).
 - If a Found/Expected formula can't be resolved, the row silently falls back to the default display — it never changes pass/fail.
 - Set **Scalar Formula Return Type** to the formulas' type (e.g. Number) to save FormulaEval calls in bulk/Flow runs; leave Auto if unsure.
+
+### Which check type compares what?
+
+If you want the *framework* to compare two sides with an operator (rather than encoding the comparison inside a formula), use a **Query** check — `CompareAgainst__c` already supports three right-hand sources:
+
+| You want to compare… | Check Method | How |
+| -------------------- | ------------ | --- |
+| A SOQL result vs a **fixed value** | Single query | `CompareAgainst__c = FixedValue`, set `FixedValue__c` |
+| A SOQL result vs a **record formula** | Single query | `CompareAgainst__c = RecordFormula`, set `RecordFormulaValue__c` |
+| A SOQL result vs **another SOQL result** | Single query / Compare two queries | `CompareAgainst__c = AnotherQuery` (or the Compare-two-queries method) |
+| Two values **on the record** (formula vs formula, formula vs fixed, etc.) | Record formula | Encode the comparison in `PassFailFormula__c`; optionally add Found/Expected to display each side |
+
+So "compare SOQL to a formula" and "compare SOQL to a fixed value" are existing Query-check features — no new setting is needed. Formula checks compare inside `PassFailFormula__c`; Found/Expected only make that comparison *readable*.
 
 ## 7. Query Rules
 
