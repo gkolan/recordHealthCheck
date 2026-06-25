@@ -3783,6 +3783,134 @@ private class RecordHealthCheckCoverageTest {
     );
   }
 
+  @IsTest
+  static void formulaFieldPlanningScansTokensAndExpandsDependencies() {
+    RecordHealthCheckEngine engine = new RecordHealthCheckEngine();
+
+    // scanFormulaFieldTokens: relationship paths captured whole, function words
+    // and double-quoted literals excluded, single fields kept, de-duplicated.
+    List<String> tokens = engine.scanFormulaFieldTokens(
+      'AND(NOT(ISBLANK(BillingCity)), CONTAINS(Website, "example.com"), NOT(ISBLANK(Parent.BillingCity)))'
+    );
+    Set<String> tokenSet = new Set<String>(tokens);
+    System.assert(tokenSet.contains('BillingCity'), tokens + ' should keep BillingCity');
+    System.assert(tokenSet.contains('Website'), tokens + ' should keep Website');
+    System.assert(
+      tokenSet.contains('Parent.BillingCity'),
+      tokens + ' should keep the relationship path whole'
+    );
+    System.assert(!tokenSet.contains('AND'), 'Function words must be excluded');
+    System.assert(!tokenSet.contains('CONTAINS'), 'Function words must be excluded');
+    System.assert(
+      !tokenSet.contains('example'),
+      'Masked string-literal contents must not be scanned as fields'
+    );
+
+    // describeFieldPath: single field, relationship path, case-insensitivity,
+    // and null for a non-existent path.
+    System.assertNotEquals(
+      null,
+      engine.describeFieldPath(Account.SObjectType, 'BillingCity')
+    );
+    System.assertNotEquals(
+      null,
+      engine.describeFieldPath(Account.SObjectType, 'Parent.Name'),
+      'Relationship paths must resolve'
+    );
+    System.assertNotEquals(
+      null,
+      engine.describeFieldPath(Account.SObjectType, 'billingcity'),
+      'Field lookup must be case-insensitive'
+    );
+    System.assertEquals(
+      null,
+      engine.describeFieldPath(Account.SObjectType, 'No_Such_Field__c'),
+      'A missing field must resolve to null, not throw'
+    );
+    System.assertEquals(
+      null,
+      engine.describeFieldPath(Account.SObjectType, 'Bogus.Name'),
+      'A missing relationship must resolve to null'
+    );
+
+    // collectRecordFields: a formula over plain + relationship operands still
+    // plans every operand (regression — the recursive walk must not drop fields
+    // that are not calculated), regardless of operand case.
+    Record_Health_Check_Rule__mdt rule = new Record_Health_Check_Rule__mdt(
+      CheckMethod__c = 'Formula',
+      PassFailFormula__c = 'AND(NOT(ISBLANK(billingcity)), NOT(ISBLANK(Parent.BillingCity)))'
+    );
+    Set<String> planned = engine.collectRecordFields(rule, Account.SObjectType);
+    System.assert(planned.contains('Id'));
+    System.assert(
+      planned.contains('billingcity'),
+      'Case-insensitive operand must be planned: ' + planned
+    );
+    System.assert(
+      planned.contains('Parent.BillingCity'),
+      'Relationship operand must be planned: ' + planned
+    );
+
+    // Calculated-field dependency expansion: when the org exposes any formula
+    // field on Account, a check that references only that field must also plan
+    // the fields ITS definition depends on — otherwise FormulaEval cannot
+    // regenerate it. Deterministic where such a field exists; a no-op assertion
+    // otherwise so the test stays green on orgs without Account formula fields.
+    Schema.DescribeFieldResult calcField = findCalculatedAccountField();
+    if (calcField != null) {
+      List<String> nestedTokens = engine.scanFormulaFieldTokens(
+        calcField.getCalculatedFormula()
+      );
+      Record_Health_Check_Rule__mdt calcRule = new Record_Health_Check_Rule__mdt(
+        CheckMethod__c = 'Formula',
+        PassFailFormula__c = 'NOT(ISBLANK(' + calcField.getName() + '))'
+      );
+      Set<String> calcPlanned = engine.collectRecordFields(
+        calcRule,
+        Account.SObjectType
+      );
+      System.assert(
+        calcPlanned.contains(calcField.getName()),
+        'The formula field itself must be planned: ' + calcPlanned
+      );
+      for (String dep : nestedTokens) {
+        // Only single-segment, real Account fields are expected in the SELECT;
+        // relationship and literal tokens are validated by the scans above.
+        if (
+          !dep.contains('.') &&
+          engine.describeFieldPath(Account.SObjectType, dep) != null
+        ) {
+          System.assert(
+            calcPlanned.contains(dep),
+            'Dependency ' +
+              dep +
+              ' of ' +
+              calcField.getName() +
+              ' must be planned: ' +
+              calcPlanned
+          );
+        }
+      }
+    }
+  }
+
+  // Returns any calculated (formula) field on Account the running org exposes, or
+  // null if there are none — used to exercise dependency expansion deterministically
+  // where possible without requiring a packaged test formula field.
+  private static Schema.DescribeFieldResult findCalculatedAccountField() {
+    for (
+      Schema.SObjectField f : Account.SObjectType.getDescribe()
+        .fields.getMap()
+        .values()
+    ) {
+      Schema.DescribeFieldResult d = f.getDescribe();
+      if (d.isCalculated() && String.isNotBlank(d.getCalculatedFormula())) {
+        return d;
+      }
+    }
+    return null;
+  }
+
   private static void assertReason(
     RecordHealthCheckResult result,
     String reasonCode

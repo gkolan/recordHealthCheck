@@ -280,6 +280,7 @@ public with sharing class RecordHealthCheckFormulaEvaluator {
       .withType(record.getSObjectType())
       .withReturnType(returnType)
       .withFormula(formulaExpression)
+      .treatNumericNullAsZero(true)
       .build()
       .evaluate(record);
   }

@@ -17,6 +17,26 @@ public with sharing class RecordHealthCheckEngine {
   // SCAN-36: GROUP BY / aggregate detection lives in RecordHealthCheckSoqlTemplate
   // (the single SOQL-shape authority); the local patterns here were dead.
 
+  // Caps how deep a formula → formula → … chain is walked when expanding
+  // calculated-field dependencies, so a misconfigured or cyclic graph can never
+  // run away. The visited set already breaks true cycles; this is a hard ceiling.
+  private static final Integer FORMULA_DEPENDENCY_DEPTH_CAP = 10;
+
+  // Salesforce formula function names and literals — a word matching one of these
+  // is part of the expression syntax, not a field, so it is never added to the
+  // SELECT. Static so it is built once per transaction rather than per scan
+  // (the scan now runs recursively across the whole dependency chain).
+  private static final Set<String> FORMULA_FUNCTION_WORDS = new Set<String>{
+    'ABS', 'AND', 'BEGINS', 'BLANKVALUE', 'BR', 'CASE', 'CEILING', 'CONTAINS',
+    'CURRENCYRATE', 'DATE', 'DATETIMEVALUE', 'DATEVALUE', 'DAY', 'EXP', 'FALSE',
+    'FIND', 'FLOOR', 'HTMLENCODE', 'HOUR', 'HYPERLINK', 'IF', 'IMAGE',
+    'INCLUDES', 'ISBLANK', 'ISNULL', 'ISPICKVAL', 'JSENCODE', 'JSINHTMLENCODE',
+    'LEFT', 'LEN', 'LN', 'LOG', 'LOWER', 'MAX', 'MID', 'MIN', 'MOD', 'MONTH',
+    'NOT', 'NOW', 'NULL', 'NULLVALUE', 'OR', 'PI', 'POWER', 'REGEX', 'RIGHT',
+    'ROUND', 'SQRT', 'SUBSTITUTE', 'TEXT', 'TODAY', 'TRIM', 'TRUE', 'UPPER',
+    'URLENCODE', 'VALUE', 'WEEKDAY', 'YEAR'
+  };
+
   @TestVisible
   private RecordHealthCheckConfigService configService = new RecordHealthCheckConfigService();
   private RecordHealthCheckFormulaEvaluator formulaEvaluator = new RecordHealthCheckFormulaEvaluator();
@@ -785,90 +805,123 @@ public with sharing class RecordHealthCheckEngine {
     if (String.isBlank(formula)) {
       return;
     }
+    // Walk the full dependency tree rooted at the record's own type. The visited
+    // set is shared across the whole walk so a formula field reached by two paths
+    // is only expanded once.
+    expandFormulaDependencies(
+      fields,
+      objectType,
+      objectType,
+      formula,
+      '',
+      0,
+      new Set<String>()
+    );
+  }
 
-    Set<String> formulaWords = new Set<String>{
-      'ABS',
-      'AND',
-      'BEGINS',
-      'BLANKVALUE',
-      'BR',
-      'CASE',
-      'CEILING',
-      'CONTAINS',
-      'CURRENCYRATE',
-      'DATE',
-      'DATETIMEVALUE',
-      'DATEVALUE',
-      'DAY',
-      'EXP',
-      'FALSE',
-      'FIND',
-      'FLOOR',
-      'HTMLENCODE',
-      'HOUR',
-      'HYPERLINK',
-      'IF',
-      'IMAGE',
-      'INCLUDES',
-      'ISBLANK',
-      'ISNULL',
-      'ISPICKVAL',
-      'JSENCODE',
-      'JSINHTMLENCODE',
-      'LEFT',
-      'LEN',
-      'LN',
-      'LOG',
-      'LOWER',
-      'MAX',
-      'MID',
-      'MIN',
-      'MOD',
-      'MONTH',
-      'NOT',
-      'NOW',
-      'NULL',
-      'NULLVALUE',
-      'OR',
-      'PI',
-      'POWER',
-      'REGEX',
-      'RIGHT',
-      'ROUND',
-      'SQRT',
-      'SUBSTITUTE',
-      'TEXT',
-      'TODAY',
-      'TRIM',
-      'TRUE',
-      'UPPER',
-      'URLENCODE',
-      'VALUE',
-      'WEEKDAY',
-      'YEAR'
-    };
-
-    // Formula string literals use double quotes. Mask them before scanning so a
-    // value such as "example.com" is never mistaken for a relationship path.
-    String scannableFormula = maskFormulaStringLiterals(formula);
-
-    // First pass: capture relationship traversal paths whole (e.g. Parent.ShippingCity).
-    // These must be added as a dotted path to the SELECT so SOQL and getSObject() traversal
-    // both work. A word-only scan would split them into non-existent bare field names.
-    Matcher dotMatcher = PATTERN_DOT_PATH.matcher(scannableFormula);
-    while (dotMatcher.find()) {
-      addReadableField(fields, objectType, dotMatcher.group(1));
+  /**
+   * Adds every field a formula expression needs to the SELECT set — including the
+   * transitive dependencies of any calculated (formula / roll-up) operand.
+   *
+   * FormulaEval regenerates formula-field values from the in-memory SObject at
+   * evaluation time, so a check like `FieldA__c > 0` — where `FieldA__c` is a
+   * formula of `FieldX__c + FieldY__c` — needs FieldX__c and FieldY__c loaded,
+   * not just FieldA__c. Loading only the top-level name makes FormulaEval throw
+   * "could not generate the requested field". This walks each referenced field's
+   * own `getCalculatedFormula()` definition recursively until it reaches plain
+   * source fields, for formulas of any return type (number, text, date, boolean,
+   * picklist) and any function — the expansion is driven by Schema, not by the
+   * specific syntax used.
+   *
+   * @param fields       accumulating SELECT set (rooted at baseType)
+   * @param baseType     the record's SObjectType — the SELECT root; never changes
+   * @param resolveType  the type the CURRENT formula's tokens resolve against
+   *                     (equals baseType at the top level, or a parent type when
+   *                     recursing into a cross-object formula definition)
+   * @param formula      the formula text being scanned at this level
+   * @param pathPrefix   relationship path from baseType to resolveType, with a
+   *                     trailing '.', or '' at the top level
+   * @param depth        current recursion depth (capped)
+   * @param visited      owner-qualified names of calculated fields already
+   *                     expanded, to break cycles and re-convergent graphs
+   */
+  private void expandFormulaDependencies(
+    Set<String> fields,
+    Schema.SObjectType baseType,
+    Schema.SObjectType resolveType,
+    String formula,
+    String pathPrefix,
+    Integer depth,
+    Set<String> visited
+  ) {
+    if (String.isBlank(formula) || depth > FORMULA_DEPENDENCY_DEPTH_CAP) {
+      return;
     }
 
-    // Second pass: single-segment field names (relationship components are harmlessly
-    // re-attempted here; addReadableField skips any name not found in the fieldMap).
-    Matcher matcher = PATTERN_WORD.matcher(scannableFormula);
-    while (matcher.find()) {
-      String word = matcher.group(0);
-      if (!formulaWords.contains(word.toUpperCase())) {
-        addReadableField(fields, objectType, word);
+    for (String token : scanFormulaFieldTokens(formula)) {
+      // Add the operand to the SELECT, rooted at the record's own type so the
+      // path is valid in the SOQL even when we are deep inside a cross-object
+      // formula definition.
+      addReadableField(fields, baseType, pathPrefix + token);
+
+      // If the operand is itself a calculated field, expand the fields ITS
+      // definition references so the whole chain can be regenerated.
+      FieldPathDescribe info = describeFieldPath(resolveType, token);
+      if (info != null && info.describe != null && info.describe.isCalculated()) {
+        String nested = info.describe.getCalculatedFormula();
+        String visitKey =
+          String.valueOf(info.ownerType) + '.' + info.describe.getName();
+        if (String.isNotBlank(nested) && visited.add(visitKey)) {
+          expandFormulaDependencies(
+            fields,
+            baseType,
+            info.ownerType,
+            nested,
+            pathPrefix + info.relationshipPrefix,
+            depth + 1,
+            visited
+          );
+        }
       }
     }
+  }
+
+  /**
+   * Scans a formula expression for the field references it contains, in document
+   * order and de-duplicated. Relationship paths (e.g. Parent.ShippingCity) are
+   * captured whole first so a word-only scan does not split them into bare names;
+   * single-segment field names follow. Formula function names and literals are
+   * excluded, and double-quoted string literals are masked so a value such as
+   * "example.com" is never mistaken for a relationship path.
+   */
+  @TestVisible
+  private List<String> scanFormulaFieldTokens(String formula) {
+    List<String> tokens = new List<String>();
+    Set<String> seen = new Set<String>();
+    if (String.isBlank(formula)) {
+      return tokens;
+    }
+    String scannable = maskFormulaStringLiterals(formula);
+
+    Matcher dotMatcher = PATTERN_DOT_PATH.matcher(scannable);
+    while (dotMatcher.find()) {
+      String path = dotMatcher.group(1);
+      if (seen.add(path)) {
+        tokens.add(path);
+      }
+    }
+
+    Matcher wordMatcher = PATTERN_WORD.matcher(scannable);
+    while (wordMatcher.find()) {
+      String word = wordMatcher.group(0);
+      if (FORMULA_FUNCTION_WORDS.contains(word.toUpperCase())) {
+        continue;
+      }
+      if (seen.add(word)) {
+        tokens.add(word);
+      }
+    }
+    return tokens;
   }
 
   @TestVisible
@@ -896,43 +949,9 @@ public with sharing class RecordHealthCheckEngine {
     if (String.isBlank(fieldPath)) {
       return;
     }
-    List<String> parts = fieldPath.split('\\.');
-    Schema.SObjectType currentType = objectType;
-    for (Integer i = 0; i < parts.size(); i++) {
-      Map<String, Schema.SObjectField> currentFields = currentType.getDescribe()
-        .fields.getMap();
-      if (i == parts.size() - 1) {
-        Schema.SObjectField terminal = currentFields.get(parts[i]);
-        if (terminal != null && terminal.getDescribe().isAccessible()) {
-          fields.add(fieldPath);
-        }
-        return;
-      }
-
-      Schema.SObjectField relationshipField;
-      for (Schema.SObjectField candidate : currentFields.values()) {
-        Schema.DescribeFieldResult description = candidate.getDescribe();
-        if (
-          description.getRelationshipName() != null &&
-          description.getRelationshipName().equalsIgnoreCase(parts[i])
-        ) {
-          relationshipField = candidate;
-          break;
-        }
-      }
-      if (
-        relationshipField == null ||
-        !relationshipField.getDescribe().isAccessible()
-      ) {
-        return;
-      }
-      List<Schema.SObjectType> referenceTypes = relationshipField
-        .getDescribe()
-        .getReferenceTo();
-      if (referenceTypes.isEmpty()) {
-        return;
-      }
-      currentType = referenceTypes[0];
+    FieldPathDescribe info = describeFieldPath(objectType, fieldPath);
+    if (info != null && info.describe != null && info.describe.isAccessible()) {
+      fields.add(fieldPath);
     }
   }
 
@@ -942,17 +961,125 @@ public with sharing class RecordHealthCheckEngine {
     Map<String, Schema.SObjectField> fieldMap,
     String fieldName
   ) {
-    if (String.isBlank(fieldName)) {
+    if (String.isBlank(fieldName) || fieldName.contains('.')) {
       return;
     }
-    if (fieldName.contains('.'))
-      return;
-    if (
-      fieldMap.containsKey(fieldName) &&
-      fieldMap.get(fieldName).getDescribe().isAccessible()
-    ) {
+    Schema.SObjectField field = getFieldCaseInsensitive(fieldMap, fieldName);
+    if (field != null && field.getDescribe().isAccessible()) {
       fields.add(fieldName);
     }
+  }
+
+  /**
+   * Resolves a (possibly relationship-qualified) field path against a starting
+   * type, returning the terminal field's describe plus the owning type and the
+   * relationship prefix needed to root nested dependencies back at the path.
+   * Lookups are case-insensitive (SCAN: a token typed as `website` or
+   * `BILLINGCITY` still resolves against the lowercase Schema field map).
+   * Returns null if any segment is missing or an intermediate relationship field
+   * is inaccessible — the caller then simply skips the field.
+   */
+  @TestVisible
+  private FieldPathDescribe describeFieldPath(
+    Schema.SObjectType objectType,
+    String fieldPath
+  ) {
+    if (objectType == null || String.isBlank(fieldPath)) {
+      return null;
+    }
+    List<String> parts = fieldPath.split('\\.');
+    Schema.SObjectType currentType = objectType;
+    List<String> relationshipParts = new List<String>();
+    for (Integer i = 0; i < parts.size(); i++) {
+      Map<String, Schema.SObjectField> currentFields = currentType.getDescribe()
+        .fields.getMap();
+      if (i == parts.size() - 1) {
+        Schema.SObjectField terminal = getFieldCaseInsensitive(
+          currentFields,
+          parts[i]
+        );
+        if (terminal == null) {
+          return null;
+        }
+        FieldPathDescribe out = new FieldPathDescribe();
+        out.describe = terminal.getDescribe();
+        out.ownerType = currentType;
+        out.relationshipPrefix = relationshipParts.isEmpty()
+          ? ''
+          : String.join(relationshipParts, '.') + '.';
+        return out;
+      }
+
+      Schema.SObjectField relationshipField = findRelationshipField(
+        currentFields,
+        parts[i]
+      );
+      if (
+        relationshipField == null ||
+        !relationshipField.getDescribe().isAccessible()
+      ) {
+        return null;
+      }
+      List<Schema.SObjectType> referenceTypes = relationshipField.getDescribe()
+        .getReferenceTo();
+      if (referenceTypes.isEmpty()) {
+        return null;
+      }
+      relationshipParts.add(parts[i]);
+      currentType = referenceTypes[0];
+    }
+    return null;
+  }
+
+  /**
+   * Case-insensitive field lookup against a Schema field map (whose keys are
+   * lowercased), so admin-authored API names resolve regardless of typed case.
+   */
+  private Schema.SObjectField getFieldCaseInsensitive(
+    Map<String, Schema.SObjectField> fieldMap,
+    String name
+  ) {
+    if (fieldMap.containsKey(name)) {
+      return fieldMap.get(name);
+    }
+    Schema.SObjectField lower = fieldMap.get(name.toLowerCase());
+    if (lower != null) {
+      return lower;
+    }
+    for (String key : fieldMap.keySet()) {
+      if (key.equalsIgnoreCase(name)) {
+        return fieldMap.get(key);
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Finds the field whose relationship name matches `relName` (case-insensitive),
+   * e.g. `Parent` → the ParentId lookup, `Account__r` → the Account__c lookup.
+   */
+  private Schema.SObjectField findRelationshipField(
+    Map<String, Schema.SObjectField> fieldMap,
+    String relName
+  ) {
+    for (Schema.SObjectField candidate : fieldMap.values()) {
+      Schema.DescribeFieldResult description = candidate.getDescribe();
+      if (
+        description.getRelationshipName() != null &&
+        description.getRelationshipName().equalsIgnoreCase(relName)
+      ) {
+        return candidate;
+      }
+    }
+    return null;
+  }
+
+  /** Terminal-field describe plus the context needed to root nested dependencies. */
+  @TestVisible
+  private class FieldPathDescribe {
+    Schema.DescribeFieldResult describe;
+    Schema.SObjectType ownerType;
+    String relationshipPrefix;
   }
 
   // ─── Result builders ──────────────────────────────────────────────────────
