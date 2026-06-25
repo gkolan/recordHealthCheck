@@ -124,7 +124,13 @@
                   </template>
                 </div>
                 <template if:true={check.showMessage}>
-                  <span class={check.messageClass}>{check.result.message}</span>
+                  <span class={check.messageClass}>
+                    <template for:each={check.messageLines} for:item="line">
+                      <span key={line.key} class={line.lineClass}
+                        >{line.text}</span
+                      >
+                    </template>
+                  </span>
                 </template>
                 <template if:true={check.showComparison}>
                   <span class="rhc-row__comparison">

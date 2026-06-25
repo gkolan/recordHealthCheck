@@ -3,11 +3,11 @@
     <fullName>MessageWhenCannotRun__c</fullName>
     <label>Message When It Can't Run</label>
     <description
-  >Optional. Replaces the default message users see when a check can't be evaluated (for example, a bad query or formula). Keep it user-friendly — never include SOQL, errors, or technical details.</description>
+  >Optional. Replaces the default message users see when a check can't be evaluated (for example, a bad query or formula). Keep it user-friendly — never include SOQL, errors, or technical details. Press Enter to start a new line; each line is shown as a separate line on the card.</description>
     <type>LongTextArea</type>
     <length>32768</length>
     <visibleLines>3</visibleLines>
         <inlineHelpText
-  >Optional. Friendly text shown when the check can't run. Do not include technical details.</inlineHelpText>
+  >Optional. Friendly text shown when the check can't run. Do not include technical details. Press Enter for a new line.</inlineHelpText>
     <required>false</required>
 </CustomField>

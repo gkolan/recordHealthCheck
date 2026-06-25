@@ -208,6 +208,23 @@ Messages and SOQL may use any readable field on the base record: **standard or c
 
 More examples: [Examples: Merge tokens in SOQL](../examples/index.md#merge-tokens-in-soql).
 
+## 11a. Multi-line messages
+
+**Message When Failed** and **Message When It Can't Run** support multiple lines. Press **Enter** in Setup to start a new line; each line renders as a separate line on the card. Use a blank line (press Enter twice) to add spacing between paragraphs.
+
+```text
+{!Name} is out of balance.
+
+Debit total: {!Debit_Total__c}
+Expected credit net: {!Credit_Net__c}
+
+Contact Finance to reconcile.
+```
+
+- Merge tokens work on any line.
+- Single-line messages are unchanged: no extra spacing is added.
+- Messages are always plain text (HTML and links are not rendered), and screen readers announce the lines as one sentence with a pause between them.
+
 ## 12. Security and Guardrails
 
 - Sharing, CRUD, and field access apply (`WITH USER_MODE` on dynamic SOQL).

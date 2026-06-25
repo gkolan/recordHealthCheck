@@ -487,6 +487,21 @@
   color: var(--slds-g-color-neutral-base-30, #3e3e3c);
 }
 
+/* Each admin-authored message line renders as its own block so newlines typed in
+   Setup (Message When Failed / Can't Run) become visual line breaks instead of
+   collapsing to one paragraph. A single-line message is one block and looks
+   exactly as before. */
+.rhc-row__message-line {
+  display: block;
+}
+
+/* An intentional blank line (a double Enter in Setup, used as paragraph
+   spacing) carries no text, so reserve a fixed height instead of letting the
+   empty block collapse to nothing. */
+.rhc-row__message-line--blank {
+  height: 0.5rem;
+}
+
 .rhc-row__message--error {
   color: var(--slds-g-color-error-base-30, #8f0311);
 }

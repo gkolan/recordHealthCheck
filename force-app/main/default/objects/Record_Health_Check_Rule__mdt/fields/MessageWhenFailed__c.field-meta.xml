@@ -3,11 +3,11 @@
     <fullName>MessageWhenFailed__c</fullName>
     <label>Message When Failed</label>
     <description
-  >The message users see when this check fails. You can pull values from the current record with merge tokens like {!Name} or {!BillingCity}.</description>
+  >The message users see when this check fails. You can pull values from the current record with merge tokens like {!Name} or {!BillingCity}. Press Enter to start a new line; each line is shown as a separate line on the card.</description>
     <type>LongTextArea</type>
     <length>32768</length>
     <visibleLines>3</visibleLines>
         <inlineHelpText
-  >Shown when the check fails. Use {!FieldApiName} to insert values from the record, e.g. "{!Name} is missing a Billing City".</inlineHelpText>
+  >Shown when the check fails. Use {!FieldApiName} to insert record values, e.g. "{!Name} is missing a Billing City". Press Enter for a new line.</inlineHelpText>
     <required>false</required>
 </CustomField>

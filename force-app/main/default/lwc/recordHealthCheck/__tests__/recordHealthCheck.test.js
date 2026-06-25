@@ -1,6 +1,9 @@
 import { createElement } from "lwc";
 import RecordHealthCheck from "c/recordHealthCheck";
-import { buildSummaryStats } from "../healthCheckPresentation";
+import {
+  buildSummaryStats,
+  splitMessageLines
+} from "../healthCheckPresentation";
 import getCheckDefinitions from "@salesforce/apex/RecordHealthCheckController.getCheckDefinitions";
 import evaluateCheck from "@salesforce/apex/RecordHealthCheckController.evaluateCheck";
 
@@ -1576,5 +1579,191 @@ describe("buildSummaryStats — label pluralization", () => {
     const passes = ["A", "B", "C"].map((n) => resolved(n, "PASS", null));
     const stat = buildSummaryStats(passes).find((s) => s.key === "pass");
     expect(stat.tooltip).toBe("3 Passed: A, B, C");
+  });
+});
+
+describe("splitMessageLines — newline handling", () => {
+  const texts = (lines) => lines.map((l) => l.text);
+
+  it("returns an empty array for null/undefined", () => {
+    expect(splitMessageLines(null)).toEqual([]);
+    expect(splitMessageLines(undefined)).toEqual([]);
+  });
+
+  it("returns a one-entry array for a single-line message (no regression)", () => {
+    const lines = splitMessageLines("This field needs attention.");
+    expect(lines).toHaveLength(1);
+    expect(lines[0].text).toBe("This field needs attention.");
+    expect(lines[0].isBlank).toBe(false);
+    expect(lines[0].lineClass).toBe("rhc-row__message-line");
+  });
+
+  it("splits a two-line message on \\n", () => {
+    expect(texts(splitMessageLines("Headline\nDetail"))).toEqual([
+      "Headline",
+      "Detail"
+    ]);
+  });
+
+  it("preserves an interior blank line as a flagged spacer", () => {
+    const lines = splitMessageLines("Headline\n\nAction");
+    expect(texts(lines)).toEqual(["Headline", "", "Action"]);
+    expect(lines.map((l) => l.isBlank)).toEqual([false, true, false]);
+    expect(lines[1].lineClass).toContain("rhc-row__message-line--blank");
+  });
+
+  it("normalizes CRLF and bare CR to LF", () => {
+    expect(texts(splitMessageLines("a\r\nb\rc"))).toEqual(["a", "b", "c"]);
+  });
+
+  it("trims leading and trailing blank lines but keeps interior ones", () => {
+    expect(texts(splitMessageLines("\n\nHeadline\n\nAction\n\n"))).toEqual([
+      "Headline",
+      "",
+      "Action"
+    ]);
+  });
+
+  it("assigns a unique key per line for the template for:each", () => {
+    const keys = splitMessageLines("a\nb\nc").map((l) => l.key);
+    expect(new Set(keys).size).toBe(3);
+  });
+});
+
+describe("c-record-health-check — multi-line messages", () => {
+  let element;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    element = createComponent();
+  });
+
+  afterEach(() => {
+    if (element.isConnected) {
+      document.body.removeChild(element);
+    }
+  });
+
+  const lineTexts = (el) =>
+    [...el.shadowRoot.querySelectorAll(".rhc-row__message-line")].map(
+      (n) => n.textContent
+    );
+
+  it("renders a multi-line FAIL message as separate visual lines", async () => {
+    getCheckDefinitions.mockResolvedValue(
+      makeDefinitions({ checks: [makeDefinitions().checks[0]] })
+    );
+    evaluateCheck.mockResolvedValue({
+      checkDeveloperName: "Check_A",
+      label: "Check_A",
+      status: "FAIL",
+      severity: "Error",
+      message: "Out of balance.\nDebit: 100\nCredit: 75",
+      priority: 1,
+      evaluatorType: "Formula"
+    });
+    await appendAndLoad(element);
+    await clickRun(element);
+
+    expect(lineTexts(element)).toEqual([
+      "Out of balance.",
+      "Debit: 100",
+      "Credit: 75"
+    ]);
+  });
+
+  it("renders a blank-line spacer between paragraphs in a FAIL message", async () => {
+    getCheckDefinitions.mockResolvedValue(
+      makeDefinitions({ checks: [makeDefinitions().checks[0]] })
+    );
+    evaluateCheck.mockResolvedValue({
+      checkDeveloperName: "Check_A",
+      label: "Check_A",
+      status: "FAIL",
+      severity: "Error",
+      message: "Out of balance.\n\nContact Finance.",
+      priority: 1,
+      evaluatorType: "Formula"
+    });
+    await appendAndLoad(element);
+    await clickRun(element);
+
+    const spacer = element.shadowRoot.querySelector(
+      ".rhc-row__message-line--blank"
+    );
+    expect(spacer).not.toBeNull();
+    expect(lineTexts(element)).toEqual([
+      "Out of balance.",
+      "",
+      "Contact Finance."
+    ]);
+  });
+
+  it("renders a multi-line Unable to Check message as separate lines", async () => {
+    getCheckDefinitions.mockResolvedValue(
+      makeDefinitions({ checks: [makeDefinitions().checks[0]] })
+    );
+    evaluateCheck.mockResolvedValue({
+      checkDeveloperName: "Check_A",
+      label: "Check_A",
+      status: "UNABLE_TO_EVALUATE",
+      reasonCode: "INVALID_FORMULA",
+      message: "Could not evaluate.\nCheck the field configuration.",
+      priority: 1,
+      evaluatorType: "Formula"
+    });
+    await appendAndLoad(element);
+    await clickRun(element);
+
+    expect(element.shadowRoot.querySelector(".rhc-row--unable")).not.toBeNull();
+    expect(lineTexts(element)).toEqual([
+      "Could not evaluate.",
+      "Check the field configuration."
+    ]);
+  });
+
+  it("renders a single-line message as one line with no spacer (regression)", async () => {
+    getCheckDefinitions.mockResolvedValue(
+      makeDefinitions({ checks: [makeDefinitions().checks[0]] })
+    );
+    evaluateCheck.mockResolvedValue({
+      checkDeveloperName: "Check_A",
+      label: "Check_A",
+      status: "FAIL",
+      severity: "Error",
+      message: "This field needs attention.",
+      priority: 1,
+      evaluatorType: "Formula"
+    });
+    await appendAndLoad(element);
+    await clickRun(element);
+
+    expect(lineTexts(element)).toEqual(["This field needs attention."]);
+    expect(
+      element.shadowRoot.querySelector(".rhc-row__message-line--blank")
+    ).toBeNull();
+  });
+
+  it("folds multi-line message lines into a coherent aria-label (a11y)", async () => {
+    getCheckDefinitions.mockResolvedValue(
+      makeDefinitions({ checks: [makeDefinitions().checks[0]] })
+    );
+    evaluateCheck.mockResolvedValue({
+      checkDeveloperName: "Check_A",
+      label: "Check_A",
+      status: "FAIL",
+      severity: "Error",
+      message: "Out of balance.\n\nContact Finance.",
+      priority: 1,
+      evaluatorType: "Formula"
+    });
+    await appendAndLoad(element);
+    await clickRun(element);
+
+    const row = element.shadowRoot.querySelector("li[aria-label]");
+    const label = row.getAttribute("aria-label");
+    // Lines joined with ". " — no raw newline, no empty run from the blank line.
+    expect(label).toContain("Out of balance. Contact Finance.");
+    expect(label).not.toContain("\n");
   });
 });

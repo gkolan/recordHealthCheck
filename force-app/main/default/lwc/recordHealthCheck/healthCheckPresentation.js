@@ -39,6 +39,59 @@ const SUMMARY_ROWS = [
 ];
 
 /**
+ * Splits an admin-authored message (Message When Failed / Message When It Can't
+ * Run) into display lines, honoring newlines typed in Setup. Returns one entry
+ * per line so the template can stack them as block elements — LWC can't render a
+ * `\n` as a visual break inside a single text node.
+ *
+ * - Normalizes CRLF / CR to LF, then splits on LF.
+ * - Trims blank lines only at the very start and end (so a stray trailing Enter
+ *   doesn't add an empty row), but preserves intentional interior blank lines as
+ *   paragraph spacing.
+ * - Each entry carries `isBlank` and a precomputed `lineClass` so blank lines can
+ *   render as fixed-height spacers instead of collapsing to nothing.
+ *
+ * A single-line message yields a one-entry array, so existing messages render
+ * exactly as before (one line, no extra spacing).
+ */
+export function splitMessageLines(message) {
+  if (message == null) return [];
+  const lines = String(message)
+    .replace(/\r\n/g, "\n")
+    .replace(/\r/g, "\n")
+    .split("\n");
+  while (lines.length && lines[0].trim() === "") lines.shift();
+  while (lines.length && lines[lines.length - 1].trim() === "") lines.pop();
+  return lines.map((text, idx) => {
+    const isBlank = text.trim() === "";
+    return {
+      key: idx,
+      text,
+      isBlank,
+      lineClass: isBlank
+        ? "rhc-row__message-line rhc-row__message-line--blank"
+        : "rhc-row__message-line"
+    };
+  });
+}
+
+/**
+ * Joins message lines into one sentence for a screen-reader aria-label. Lines
+ * are separated by a sentence break so a reader pauses between them, but a line
+ * that already ends in terminal punctuation (. ! ? : ;) is joined with a plain
+ * space — otherwise authored sentences would read back with a doubled period
+ * ("Out of balance.. Contact Finance."). Each line is trimmed first.
+ */
+function joinForSpeech(lines) {
+  const parts = lines.map((line) => line.trim()).filter(Boolean);
+  return parts.reduce((acc, part, idx) => {
+    if (idx === 0) return part;
+    const sep = /[.!?:;]$/.test(acc) ? " " : ". ";
+    return acc + sep + part;
+  }, "");
+}
+
+/**
  * Classifies a resolved check into one of the OUTCOME_STYLES keys. Returns null
  * for rows that are still pending/loading or have no result yet.
  */
@@ -119,6 +172,12 @@ export function annotateCheck(c, debugMode) {
 
   const showMessage = isResolved && !isPass && !!(c.result && c.result.message);
 
+  // Split the per-check message into display lines so admins can author
+  // multi-line Failed / Unable guidance (headline + detail + action) and have it
+  // render as stacked lines instead of one collapsed paragraph. Single-line
+  // messages yield a one-entry array and render unchanged.
+  const messageLines = showMessage ? splitMessageLines(c.result.message) : [];
+
   // Actual-vs-expected comparison, shown on a non-passing resolved row when the
   // evaluator captured it. Either side may be absent (e.g. Formula checks carry
   // only the expected condition), so each part renders independently.
@@ -142,11 +201,20 @@ export function annotateCheck(c, debugMode) {
   // P1-05 a11y: the <li> carries aria-label, which overrides its descendant text
   // for screen readers — so the actionable failure/skip message must be folded
   // into the accessible name or it is never announced.
+  // Fold multi-line messages into a single coherent sentence: join the non-blank
+  // lines with ". " so a screen reader announces a short pause between lines
+  // instead of a run-on string with raw newline characters.
+  const accessibleMessage = showMessage
+    ? joinForSpeech(
+        messageLines.filter((line) => !line.isBlank).map((line) => line.text)
+      )
+    : null;
+
   const accessibleLabel = [
     c.label,
     isLoading ? "Evaluating" : isPending ? "Pending" : statusLabel,
     c.description,
-    showMessage ? c.result.message : null,
+    accessibleMessage,
     showComparison && actualValue != null ? `Found ${actualValue}` : null,
     showComparison && expectedValue != null ? `Expected ${expectedValue}` : null
   ]
@@ -187,6 +255,7 @@ export function annotateCheck(c, debugMode) {
     rowAccentClass,
     messageClass,
     showMessage,
+    messageLines,
     actualValue,
     expectedValue,
     showComparison,
